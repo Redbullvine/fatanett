@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>App Design & Digital Tools – Fatanett, LLC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">Fatanett<span>.LLC</span></a>
+      <nav class="main-nav">
+        <a href="app-design.html" class="active">App Design</a>
+        <a href="remote-services.html">Remote Services</a>
+        <a href="logistics.html">Logistics &amp; Shipping</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="sub-hero">
+      <div class="container">
+        <h1>App Design &amp; Digital Tools</h1>
+        <p>
+          Fatanett experiments with small, focused applications. Each tool is intended to be practical, quick to use,
+          and capable of standing on its own as a useful utility or early-stage product concept.
+        </p>
+      </div>
+    </section>
+
+    <section class="section section-light">
+      <div class="container">
+        <h2>Current App Concepts</h2>
+        <ul class="platform-list">
+          <li>
+            <strong>ExitMap</strong> &mdash; A travel helper designed around exits and stops, focused on keeping drivers 
+            aware of what is coming up next on their route. <a href="https://exitmap.app" target="_blank">exitmap.app</a>
+          </li>
+          <li>
+            <strong>CandyApple</strong> &mdash; An all-in-one hub concept that brings useful sites, tools, and links into 
+            a single place for quick access. <a href="https://candyapple.app" target="_blank">candyapple.app</a>
+          </li>
+          <li>
+            <strong>Tadaah</strong> &mdash; A simple “upload and transform” media workflow, turning input photos into 
+            AI-assisted output. (Branding and design: black &amp; pink.) <a href="#" target="_blank">tadaah.app</a>
+          </li>
+          <li>
+            <strong>FreightMate</strong> &mdash; A booking and coordination concept aimed at matching freight loads with 
+            available hotshot trucks. (In progress on Bubble.)
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; <span id="year"></span> Fatanett, LLC. All rights reserved.</p>
+    </div>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fatanett, LLC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Fatanett, LLC – Parent company for remote services, app design, and logistics." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">Fatanett<span>.LLC</span></a>
+      <nav class="main-nav">
+        <a href="app-design.html">App Design</a>
+        <a href="remote-services.html">Remote Services</a>
+        <a href="logistics.html">Logistics &amp; Shipping</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero hero-navy">
+      <div class="container hero-inner">
+        <div class="hero-text">
+          <h1>Fatanett, LLC</h1>
+          <p class="hero-subtitle">
+            A small, focused operator at the intersection of technology, remote services, and logistics.
+          </p>
+          <p class="hero-body">
+            This site is a simple overview of what we do and how our work is organized. From app concepts to
+            remote support and hotshot trucking, Fatanett acts as the umbrella for a growing set of working
+            projects and platforms.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="overview" class="section section-light">
+      <div class="container">
+        <h2>What We Do</h2>
+        <div class="three-columns">
+          <article class="column">
+            <h3>App Design &amp; Digital Tools</h3>
+            <p>
+              We design and stand up lightweight web applications and utilities that solve specific problems&mdash;
+              from travel helpers to AI-assisted media tools. The focus is on speed, practicality, and getting real
+              users in front of working products, not endless theory.
+            </p>
+            <a href="app-design.html" class="btn-outline">View App Design &amp; Tools</a>
+          </article>
+
+          <article class="column">
+            <h3>Remote Services</h3>
+            <p>
+              We provide hands-on remote support for small businesses and independent operators who need a reliable
+              extra set of eyes and ears. That includes basic IT help, simple troubleshooting, answering service,
+              and customer-facing communication support.
+            </p>
+            <a href="remote-services.html" class="btn-outline">View Remote Services</a>
+          </article>
+
+          <article class="column">
+            <h3>Logistics &amp; Shipping</h3>
+            <p>
+              Under 369 Logistics LLC and the Goosenecker brand, we work in the hotshot and regional freight space.
+              The goal is simple: move freight, keep customers updated, and use tools that make routing and
+              coordination easier on everyone involved.
+            </p>
+            <a href="logistics.html" class="btn-outline">View Logistics &amp; Shipping</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section section-navy">
+      <div class="container">
+        <h2>Contact</h2>
+        <p>
+          Fatanett, LLC is still in the build-and-refine stage. If you are interested in discussing any of the 
+          projects mentioned here, potential partnerships, or future investment, use the contact details below.
+        </p>
+        <div class="contact-block">
+          <p><strong>Email:</strong> <a href="mailto:info@fatanett.com">info@fatanett.com</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; <span id="year"></span> Fatanett, LLC. All rights reserved.</p>
+    </div>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </footer>
+</body>
+</html>
