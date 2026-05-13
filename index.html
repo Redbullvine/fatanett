@@ -4,27 +4,32 @@
   <meta charset="UTF-8" />
   <title>Fatanett, LLC | Custom Websites, Business Apps, Workflow Systems</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta
-    name="description"
-    content="Fatanett builds custom website design, business web apps, hiring platforms, workflow systems, and telecom field tools for companies that need practical digital infrastructure."
-  />
+  <meta name="description" content="Fatanett builds custom website design, business web apps, hiring platforms, workflow systems, and telecom field tools for companies that need practical digital infrastructure." />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
   <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <header class="site-header">
+  <!-- Custom cursor -->
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
+  <!-- ── NAVIGATION ── -->
+  <header class="site-header" id="site-header">
     <div class="container header-inner">
       <a href="index.html" class="logo">Fatanett<span>.LLC</span></a>
       <nav class="main-nav" aria-label="Primary">
         <a href="#services">Services</a>
         <a href="#packages">Packages</a>
         <a href="#platforms">Platforms</a>
-        <a href="#contact">Contact</a>
+        <a href="#contact" class="nav-cta">Get a Quote</a>
       </nav>
     </div>
   </header>
@@ -32,139 +37,177 @@
   <main>
 
     <!-- ── HERO ── -->
-    <section class="hero hero-navy">
+    <section class="hero">
+      <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
       <canvas id="hero-canvas" aria-hidden="true"></canvas>
-      <div class="hero-glow" aria-hidden="true"></div>
 
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">Custom websites, apps, and operational software</p>
-          <h1>Practical digital tools built for real business use.</h1>
-          <p class="hero-subtitle">
-            Fatanett designs and builds custom websites, business apps, workflow systems, and field operations tools
-            that teams can actually run on every day.
-          </p>
-          <p class="hero-body">
-            We help companies launch stronger web presence, cleaner hiring workflows, and purpose-built operational
-            platforms without the bloated agency process or generic software stack.
-          </p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#contact">Request a Quote</a>
-            <a class="btn btn-secondary" href="#packages">View Packages</a>
-          </div>
-          <div class="trust-strip" aria-label="Core offer">
-            <span>Websites</span>
-            <span>Apps</span>
-            <span>Workflow Platforms</span>
-            <span>Field Operations Tools</span>
-          </div>
+      <div class="container">
+        <p class="hero-eyebrow">Custom websites, apps &amp; operational software</p>
+        <h1 class="hero-headline animate-words">
+          Practical digital tools built for real business use.
+        </h1>
+        <p class="hero-sub">
+          Fatanett designs and builds custom websites, business apps, workflow systems, and field
+          operations tools that teams can actually run on every day.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#contact">Request a Quote</a>
+          <a class="btn btn-secondary" href="#packages">View Packages</a>
         </div>
-
-        <aside class="hero-panel" aria-label="Fatanett capabilities">
-          <div class="hero-panel-card">
-            <p class="panel-label">What companies hire us for</p>
-            <ul class="hero-points">
-              <li>Custom website design with conversion-focused structure</li>
-              <li>Business web apps and internal workflow systems</li>
-              <li>Hiring and careers platforms that streamline applicants</li>
-              <li>Telecom and field verification tools with proof-of-work flows</li>
-            </ul>
-          </div>
-          <div class="hero-panel-metrics">
-            <div class="metric-card">
-              <strong>Website + platform packages</strong>
-              <span>Built for teams that need both public-facing presence and internal systems.</span>
-            </div>
-            <div class="metric-card">
-              <strong>Fast, focused delivery</strong>
-              <span>Clear scopes, direct communication, and builds tied to actual business operations.</span>
-            </div>
-          </div>
-        </aside>
       </div>
 
-      <!-- Wave transition into services section -->
-      <div class="hero-wave" aria-hidden="true">
-        <svg viewBox="0 0 1440 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,45 C240,70 480,15 720,40 C960,65 1200,18 1440,45 L1440,70 L0,70 Z" fill="#051f1b"/>
-        </svg>
+      <div class="scroll-cue" aria-hidden="true">
+        <span class="scroll-cue-label">Scroll</span>
+        <div class="scroll-cue-line"></div>
       </div>
     </section>
+
+    <!-- ── FEATURE STRIP ── -->
+    <div class="feature-strip">
+      <div class="container feature-strip-grid">
+        <div class="feature-item">
+          <span class="panel-label">What companies hire us for</span>
+          <ul>
+            <li>Custom website design with conversion-focused structure</li>
+            <li>Business web apps and internal workflow systems</li>
+            <li>Hiring and careers platforms that streamline applicants</li>
+            <li>Telecom and field verification tools with proof-of-work flows</li>
+          </ul>
+        </div>
+        <div class="feature-item">
+          <span class="panel-label">Website + platform packages</span>
+          <p>Built for teams that need both public-facing presence and internal systems. Clear scopes, no bloated agency process.</p>
+        </div>
+        <div class="feature-item">
+          <span class="panel-label">Fast, focused delivery</span>
+          <p>Direct communication and builds tied to actual business operations — not feature lists that never ship.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MARQUEE ── -->
+    <div class="marquee-section" aria-hidden="true">
+      <div class="marquee-track">
+        <!-- First set -->
+        <span class="marquee-item">Business Websites <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Custom App Design <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Hiring Platforms <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Workflow Systems <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Telecom Field Tools <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Product Launch Support <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Operations Software <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Field Verification <span class="marquee-sep"></span></span>
+        <!-- Duplicate for seamless loop -->
+        <span class="marquee-item">Business Websites <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Custom App Design <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Hiring Platforms <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Workflow Systems <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Telecom Field Tools <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Product Launch Support <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Operations Software <span class="marquee-sep"></span></span>
+        <span class="marquee-item">Field Verification <span class="marquee-sep"></span></span>
+      </div>
+    </div>
 
     <!-- ── SERVICES ── -->
-    <section id="services" class="section section-slate">
+    <section id="services" class="section">
       <div class="container">
-        <div class="section-heading" data-animate>
+        <div data-animate>
           <p class="eyebrow">Services</p>
-          <h2>What Fatanett builds</h2>
-          <p class="section-lead">
-            From lead-generation websites to business web apps and field workflow tools, our work is designed to solve
-            a business problem, not just fill a screen.
-          </p>
+          <h2 class="section-title">What Fatanett builds</h2>
+          <p class="section-lead">From lead-generation websites to field workflow tools — everything is designed to solve a real business problem, not just fill a screen.</p>
         </div>
 
-        <div class="service-grid">
-          <article class="service-card" data-animate>
-            <div class="service-icon" aria-hidden="true">01</div>
-            <h3>Business Websites</h3>
-            <p>Modern, high-trust websites for companies that need better presentation, clearer offers, and stronger lead flow.</p>
-            <a href="#packages" class="text-link">View website packages</a>
-          </article>
-
-          <article class="service-card" data-animate>
-            <div class="service-icon" aria-hidden="true">02</div>
-            <h3>Careers / Hiring Platforms</h3>
-            <p>Careers pages, job listings, and applicant workflows that make hiring easier for growing teams.</p>
-            <a href="#packages" class="text-link">See hiring package</a>
-          </article>
-
-          <article class="service-card" data-animate>
-            <div class="service-icon" aria-hidden="true">03</div>
-            <h3>Custom App Design</h3>
-            <p>Purpose-built interfaces and web apps for teams that need more than an off-the-shelf tool can offer.</p>
-            <a href="#platforms" class="text-link">Explore live products</a>
-          </article>
-
-          <article class="service-card" data-animate>
-            <div class="service-icon" aria-hidden="true">04</div>
-            <h3>Workflow &amp; Operations Systems</h3>
-            <p>Internal systems for tracking tasks, approvals, submissions, records, onboarding, and business process flow.</p>
-            <a href="#industries" class="text-link">See use cases</a>
-          </article>
-
-          <article class="service-card" data-animate>
-            <div class="service-icon" aria-hidden="true">05</div>
-            <h3>Telecom / Field Verification Tools</h3>
-            <p>Proof capture, status tracking, and field-ready operational tools built for teams that need accountability in motion.</p>
-            <a href="#platforms" class="text-link">View SpecCom</a>
-          </article>
-
-          <article class="service-card" data-animate>
-            <div class="service-icon" aria-hidden="true">06</div>
-            <h3>Branding / Product Launch Support</h3>
-            <p>Launch-focused design support, messaging cleanup, and product presentation for new offers and digital rollouts.</p>
-            <a href="#contact" class="text-link">Talk about your launch</a>
-          </article>
+        <div class="service-list">
+          <a href="#packages" class="service-row" data-animate data-delay="1">
+            <span class="service-num">01</span>
+            <div class="service-info">
+              <h3>Business Websites</h3>
+              <p>Modern, high-trust websites for companies that need better presentation, clearer offers, and stronger lead flow.</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </a>
+          <a href="#packages" class="service-row" data-animate data-delay="2">
+            <span class="service-num">02</span>
+            <div class="service-info">
+              <h3>Careers / Hiring Platforms</h3>
+              <p>Careers pages, job listings, and applicant workflows that make hiring easier for growing teams.</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </a>
+          <a href="#platforms" class="service-row" data-animate data-delay="3">
+            <span class="service-num">03</span>
+            <div class="service-info">
+              <h3>Custom App Design</h3>
+              <p>Purpose-built interfaces and web apps for teams that need more than an off-the-shelf tool can offer.</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </a>
+          <a href="#contact" class="service-row" data-animate data-delay="4">
+            <span class="service-num">04</span>
+            <div class="service-info">
+              <h3>Workflow &amp; Operations Systems</h3>
+              <p>Internal systems for tracking tasks, approvals, submissions, records, onboarding, and business process flow.</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </a>
+          <a href="#platforms" class="service-row" data-animate data-delay="5">
+            <span class="service-num">05</span>
+            <div class="service-info">
+              <h3>Telecom / Field Verification Tools</h3>
+              <p>Proof capture, status tracking, and field-ready operational tools built for teams that need accountability in motion.</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </a>
+          <a href="#contact" class="service-row" data-animate data-delay="6">
+            <span class="service-num">06</span>
+            <div class="service-info">
+              <h3>Branding / Product Launch Support</h3>
+              <p>Launch-focused design support, messaging cleanup, and product presentation for new offers and digital rollouts.</p>
+            </div>
+            <span class="service-arrow">→</span>
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- ── PACKAGES ── -->
-    <section id="packages" class="section section-night">
+    <div class="section-divider"></div>
+
+    <!-- ── STATS ── -->
+    <section class="stats-section">
       <div class="container">
-        <div class="section-heading section-heading-split" data-animate>
-          <div>
-            <p class="eyebrow">Packages</p>
-            <h2>Website and platform packages with real scope visibility</h2>
+        <div class="stats-grid" data-animate>
+          <div class="stat-item">
+            <div class="stat-value"><span class="count" data-target="6">6</span><span class="stat-accent">+</span></div>
+            <div class="stat-label">Service Areas</div>
           </div>
-          <p class="section-lead">
-            Public pricing helps teams understand the level of build they need. Larger custom platforms and full
-            operational systems are scoped individually.
-          </p>
+          <div class="stat-item">
+            <div class="stat-value"><span class="stat-accent">$</span><span class="count" data-target="2500">2,500</span></div>
+            <div class="stat-label">Starting Price</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value"><span class="count" data-target="4">4</span></div>
+            <div class="stat-label">Live Products in Market</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ── PACKAGES ── -->
+    <section id="packages" class="section section-alt">
+      <div class="container">
+        <div data-animate>
+          <p class="eyebrow">Packages</p>
+          <h2 class="section-title">Real scope. Real pricing.</h2>
+          <p class="section-lead">Public pricing helps teams understand the level of build they need. Larger custom platforms and operational systems are scoped individually.</p>
         </div>
 
         <div class="package-grid">
-          <article class="package-card" data-animate>
+          <article class="glass-card package-card tilt" data-animate data-delay="1">
             <p class="package-tier">Starter Website</p>
             <h3>Starting at $2,500</h3>
             <p class="package-summary">For small businesses that need a polished online presence and a stronger first impression.</p>
@@ -176,7 +219,7 @@
             <a class="btn btn-secondary btn-block" href="#contact">Request Custom Quote</a>
           </article>
 
-          <article class="package-card featured-package" data-animate>
+          <article class="glass-card package-card featured-package tilt" data-animate data-delay="2">
             <p class="package-tier">Growth Website + Forms</p>
             <h3>Starting at $5,000</h3>
             <p class="package-summary">For companies that need more pages, stronger conversion structure, and better lead capture.</p>
@@ -188,7 +231,7 @@
             <a class="btn btn-primary btn-block" href="#contact">Talk About Your Project</a>
           </article>
 
-          <article class="package-card" data-animate>
+          <article class="glass-card package-card tilt" data-animate data-delay="3">
             <p class="package-tier">Website + Hiring Package</p>
             <h3>Starting at $8,500</h3>
             <p class="package-summary">For teams that need a public website plus a careers section, job listings, and application workflow.</p>
@@ -200,7 +243,7 @@
             <a class="btn btn-secondary btn-block" href="#contact">Request Custom Quote</a>
           </article>
 
-          <article class="package-card" data-animate>
+          <article class="glass-card package-card tilt" data-animate data-delay="4">
             <p class="package-tier">Operations Package</p>
             <h3>Starting at $15,000+</h3>
             <p class="package-summary">For companies that need a website, workflow tools, onboarding flow, and deeper app or platform integration.</p>
@@ -213,31 +256,28 @@
           </article>
         </div>
 
-        <p class="package-note">
-          Larger custom platforms, telecom workflow systems, and full operational software builds are quoted based on scope,
-          integration requirements, and rollout needs.
+        <p class="package-note" data-animate>
+          Larger custom platforms, telecom workflow systems, and full operational software builds are quoted based on scope, integration requirements, and rollout needs.
         </p>
       </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- ── PLATFORMS ── -->
-    <section id="platforms" class="section section-slate">
+    <section id="platforms" class="section">
       <div class="container">
-        <div class="section-heading" data-animate>
+        <div data-animate>
           <p class="eyebrow">Featured Products</p>
-          <h2>Live products, internal tools, and platforms in active development</h2>
-          <p class="section-lead">
-            Fatanett is not just pitching ideas. These projects show the kinds of interfaces, systems, and operational
-            products we actively build.
-          </p>
+          <h2 class="section-title">Live products we've built.</h2>
+          <p class="section-lead">Not pitches — actual software in market. These show the caliber of interface, system, and operational product Fatanett delivers.</p>
         </div>
 
         <div class="platform-grid platform-grid-dual">
-          <article class="app-card app-card-featured app-card-featured-primary" data-animate>
+          <article class="app-card app-card-featured-primary tilt" data-animate data-delay="1">
             <div class="app-media">
               <video class="app-preview" autoplay muted loop playsinline webkit-playsinline preload="metadata">
                 <source src="assets/previews/tadaah-previews.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
               </video>
             </div>
             <div class="app-card-body">
@@ -245,10 +285,7 @@
                 <h3>Tadaah</h3>
                 <span class="pill live">Featured App</span>
               </div>
-              <p class="app-card-copy">
-                Consumer-facing product showing polished interface work, media flow design, and the kind of product execution
-                we bring to customer-facing builds.
-              </p>
+              <p class="app-card-copy">Consumer-facing product showing polished interface work, media flow design, and the kind of product execution we bring to customer-facing builds.</p>
               <div class="app-meta">
                 <span>Live product</span>
                 <span>Customer-facing UX</span>
@@ -260,11 +297,10 @@
             </div>
           </article>
 
-          <article class="app-card app-card-featured app-card-featured-accent" data-animate>
+          <article class="app-card app-card-featured-accent tilt" data-animate data-delay="2">
             <div class="app-media">
               <video class="app-preview" autoplay muted loop playsinline webkit-playsinline preload="metadata">
                 <source src="assets/previews/speccom-previews.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
               </video>
             </div>
             <div class="app-card-body">
@@ -272,10 +308,7 @@
                 <h3>SpecCom</h3>
                 <span class="pill demo">Flagship Platform</span>
               </div>
-              <p class="app-card-copy">
-                Field workflow and proof-of-work platform for telecom and operational teams. Built around verification,
-                submissions, workflow accountability, and job visibility in the field.
-              </p>
+              <p class="app-card-copy">Field workflow and proof-of-work platform for telecom and operational teams. Built around verification, submissions, workflow accountability, and job visibility in the field.</p>
               <div class="app-meta">
                 <span>Operational software</span>
                 <span>Telecom workflow</span>
@@ -292,18 +325,13 @@
           <div class="supporting-copy" data-animate>
             <p class="eyebrow">Supporting examples</p>
             <h3>Additional live products and smaller concepts</h3>
-            <p>
-              We still maintain other experiments and utility products, but the strongest signal of where Fatanett is heading
-              is in premium product work like Tadaah and serious operational platforms like SpecCom.
-            </p>
+            <p>We still maintain other experiments and utility products, but the strongest signal of where Fatanett is heading is in premium product work like Tadaah and serious operational platforms like SpecCom.</p>
           </div>
-
           <div class="platform-side-grid">
-            <article class="app-card app-card-compact" data-animate>
+            <article class="app-card app-card-compact tilt" data-animate data-delay="1">
               <div class="app-media">
                 <video class="app-preview" autoplay muted loop playsinline webkit-playsinline preload="metadata">
                   <source src="assets/previews/exitmap-previews.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
                 </video>
               </div>
               <div class="app-card-body">
@@ -311,18 +339,16 @@
                   <h3>ExitMap</h3>
                   <span class="pill subdued">Utility App</span>
                 </div>
-                <p class="app-card-copy">Navigation-oriented product that highlights product thinking, lightweight utility design, and focused execution.</p>
+                <p class="app-card-copy">Navigation-oriented product highlighting product thinking and focused execution.</p>
                 <div class="app-actions">
-                  <a class="text-link" href="https://exitmap.app" target="_blank" rel="noopener noreferrer">Open App</a>
+                  <a class="text-link" href="https://exitmap.app" target="_blank" rel="noopener noreferrer">Open App →</a>
                 </div>
               </div>
             </article>
-
-            <article class="app-card app-card-compact" data-animate>
+            <article class="app-card app-card-compact tilt" data-animate data-delay="2">
               <div class="app-media">
                 <video class="app-preview" autoplay muted loop playsinline webkit-playsinline preload="metadata">
                   <source src="assets/previews/candyapple-previrews.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
                 </video>
               </div>
               <div class="app-card-body">
@@ -330,9 +356,9 @@
                   <h3>CandyApple</h3>
                   <span class="pill subdued">Utility App</span>
                 </div>
-                <p class="app-card-copy">Utility hub concept that demonstrates multi-tool organization, quick-access workflows, and modular product thinking.</p>
+                <p class="app-card-copy">Utility hub concept demonstrating multi-tool organization and modular product thinking.</p>
                 <div class="app-actions">
-                  <a class="text-link" href="https://candyapple.app" target="_blank" rel="noopener noreferrer">Open App</a>
+                  <a class="text-link" href="https://candyapple.app" target="_blank" rel="noopener noreferrer">Open App →</a>
                 </div>
               </div>
             </article>
@@ -341,88 +367,87 @@
       </div>
     </section>
 
-    <!-- ── WHY FATANETT ── -->
-    <section id="why-fatanett" class="section section-night">
-      <div class="container">
-        <div class="section-heading" data-animate>
-          <p class="eyebrow">Why Fatanett</p>
-          <h2>Built for companies that need useful systems, not agency fluff</h2>
-        </div>
+    <div class="section-divider"></div>
 
+    <!-- ── WHY FATANETT ── -->
+    <section id="why-fatanett" class="section section-alt">
+      <div class="container">
+        <div data-animate>
+          <p class="eyebrow">Why Fatanett</p>
+          <h2 class="section-title">Built for results, not resumes.</h2>
+        </div>
         <div class="reason-grid">
-          <article class="reason-card" data-animate>
+          <article class="glass-card reason-card tilt" data-animate data-delay="1">
             <h3>Practical tools over bloated software</h3>
-            <p>We focus on what your team actually needs to ship, track, capture, and improve, without burying the project in unnecessary layers.</p>
+            <p>We focus on what your team actually needs to ship, track, capture, and improve — without burying the project in unnecessary layers.</p>
           </article>
-          <article class="reason-card" data-animate>
+          <article class="glass-card reason-card tilt" data-animate data-delay="2">
             <h3>Real-world operational thinking</h3>
             <p>Our work is informed by how companies operate in the field, manage submissions, hire people, and keep processes moving.</p>
           </article>
-          <article class="reason-card" data-animate>
+          <article class="glass-card reason-card tilt" data-animate data-delay="3">
             <h3>Fast iteration with business purpose</h3>
-            <p>We move quickly, but we do it around a clear business outcome: better lead flow, cleaner workflows, or stronger operational visibility.</p>
+            <p>We move quickly, but around a clear business outcome: better lead flow, cleaner workflows, or stronger operational visibility.</p>
           </article>
-          <article class="reason-card" data-animate>
+          <article class="glass-card reason-card tilt" data-animate data-delay="4">
             <h3>Focused support and direct communication</h3>
-            <p>You get a collaborative build process with sharper decisions, tighter scope awareness, and less of the handoff chaos that slows projects down.</p>
+            <p>A collaborative build process with sharper decisions, tighter scope awareness, and less of the handoff chaos that slows projects down.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- ── INDUSTRIES ── -->
-    <section id="industries" class="section section-slate">
-      <div class="container">
-        <div class="section-heading" data-animate>
-          <p class="eyebrow">Industries &amp; Use Cases</p>
-          <h2>Who this work is built for</h2>
-          <p class="section-lead">
-            The strongest fit is usually a company that needs a better digital front door and better internal execution at the same time.
-          </p>
-        </div>
+    <div class="section-divider"></div>
 
+    <!-- ── INDUSTRIES ── -->
+    <section id="industries" class="section">
+      <div class="container">
+        <div data-animate>
+          <p class="eyebrow">Industries &amp; Use Cases</p>
+          <h2 class="section-title">Who this work is built for.</h2>
+          <p class="section-lead">The strongest fit is usually a company that needs a better digital front door and better internal execution at the same time.</p>
+        </div>
         <div class="industry-grid">
-          <article class="industry-card" data-animate>
+          <article class="glass-card industry-card tilt" data-animate data-delay="1">
             <h3>Telecom contractors</h3>
             <p>Teams that need field verification, proof capture, workflow consistency, and stronger operational visibility.</p>
           </article>
-          <article class="industry-card" data-animate>
+          <article class="glass-card industry-card tilt" data-animate data-delay="2">
             <h3>Field service companies</h3>
             <p>Operations that rely on crews, dispatch flow, job status tracking, and accountable reporting from the field.</p>
           </article>
-          <article class="industry-card" data-animate>
+          <article class="glass-card industry-card tilt" data-animate data-delay="3">
             <h3>Construction-adjacent operations</h3>
             <p>Businesses with moving parts across people, sites, timelines, and documentation requirements.</p>
           </article>
-          <article class="industry-card" data-animate>
+          <article class="glass-card industry-card tilt" data-animate data-delay="4">
             <h3>Small businesses needing a modern website</h3>
             <p>Owners who need a premium online presence that actually explains the offer and drives inquiries.</p>
           </article>
-          <article class="industry-card" data-animate>
+          <article class="glass-card industry-card tilt" data-animate data-delay="5">
             <h3>Companies needing internal tools</h3>
             <p>Teams that have outgrown spreadsheets, patchwork forms, and manual process handling.</p>
           </article>
-          <article class="industry-card" data-animate>
-            <h3>Teams needing proof, tracking, and workflows</h3>
+          <article class="glass-card industry-card tilt" data-animate data-delay="6">
+            <h3>Teams needing proof, tracking &amp; workflows</h3>
             <p>Organizations that need cleaner submission flows, better visibility, and software aligned to how they already work.</p>
           </article>
         </div>
       </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- ── CONTACT ── -->
-    <section id="contact" class="section section-contact">
+    <section id="contact" class="section contact-section">
       <div class="container contact-layout">
         <div class="contact-copy" data-animate>
           <p class="eyebrow">Start the conversation</p>
-          <h2>Tell us what you need built.</h2>
-          <p class="section-lead">
-            Need a website, careers portal, business app, or full operational platform? Let's talk about the scope,
-            timeline, and what would actually help your team.
-          </p>
+          <h2 class="section-title">Tell us what you need built.</h2>
+          <p class="section-lead">Need a website, careers portal, business app, or full operational platform? Let's talk scope, timeline, and what would actually move the needle for your team.</p>
           <div class="contact-details">
             <p><strong>Email:</strong> <a href="mailto:support@fatanett.com">support@fatanett.com</a></p>
-            <p><strong>Project type:</strong> Websites, hiring platforms, workflow systems, telecom field tools</p>
+            <p><strong>Project types:</strong> Websites · Hiring platforms · Workflow systems · Telecom field tools</p>
           </div>
           <div class="contact-actions">
             <a class="btn btn-primary" href="mailto:support@fatanett.com?subject=Project%20Quote%20Request">Request a Quote</a>
@@ -430,20 +455,11 @@
           </div>
         </div>
 
-        <form class="contact-form" name="homepage-inquiry" method="POST" data-netlify="true" data-animate>
+        <form class="glass-card contact-form" name="homepage-inquiry" method="POST" data-netlify="true" data-animate data-delay="2">
           <input type="hidden" name="form-name" value="homepage-inquiry" />
-          <label>
-            Name
-            <input type="text" name="name" placeholder="Your name" required />
-          </label>
-          <label>
-            Company
-            <input type="text" name="company" placeholder="Company name" />
-          </label>
-          <label>
-            Email
-            <input type="email" name="email" placeholder="you@company.com" required />
-          </label>
+          <label>Name <input type="text" name="name" placeholder="Your name" required /></label>
+          <label>Company <input type="text" name="company" placeholder="Company name" /></label>
+          <label>Email <input type="email" name="email" placeholder="you@company.com" required /></label>
           <label>
             What do you need?
             <select name="project-type" required>
@@ -456,9 +472,8 @@
               <option>Not Sure Yet</option>
             </select>
           </label>
-          <label>
-            Project details
-            <textarea name="message" rows="5" placeholder="Tell us what you need built, what your team does, and what problem you want to solve." required></textarea>
+          <label>Project details
+            <textarea name="message" rows="4" placeholder="Tell us what you need built, what your team does, and what problem you want to solve." required></textarea>
           </label>
           <button class="btn btn-primary btn-block" type="submit">Send Inquiry</button>
         </form>
@@ -467,106 +482,139 @@
 
   </main>
 
+  <!-- ── FOOTER ── -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>&copy; <span id="year"></span> Fatanett, LLC. All rights reserved.</p>
+      <span class="footer-logo">Fatanett<span>.LLC</span></span>
+      <span class="footer-copy">&copy; <span id="year"></span> Fatanett, LLC. All rights reserved.</span>
     </div>
   </footer>
 
   <script>
-    // ── Particle network canvas ──
-    (function () {
-      var canvas = document.getElementById('hero-canvas');
-      if (!canvas) return;
+  (function () {
+    'use strict';
+
+    /* ── Particle canvas ── */
+    var canvas = document.getElementById('hero-canvas');
+    if (canvas) {
       var ctx = canvas.getContext('2d');
       var W, H, pts;
-      var COUNT = 85;
-      var LINK  = 128;
-      var C     = '126,224,195';
-
-      function resize() {
-        W = canvas.width  = canvas.offsetWidth;
-        H = canvas.height = canvas.offsetHeight;
-      }
-
+      var COUNT = 90, LINK = 130, C = '126,224,195';
+      function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
       function mkPt() {
-        return {
-          x:  Math.random() * W,
-          y:  Math.random() * H,
-          vx: (Math.random() - 0.5) * 0.36,
-          vy: (Math.random() - 0.5) * 0.36,
-          r:  Math.random() * 1.5 + 0.5,
-          a:  Math.random() * 0.45 + 0.25
-        };
+        return { x: Math.random()*W, y: Math.random()*H,
+                 vx: (Math.random()-.5)*.38, vy: (Math.random()-.5)*.38,
+                 r: Math.random()*1.6+.5, a: Math.random()*.45+.25 };
       }
-
-      function init() { resize(); pts = Array.from({ length: COUNT }, mkPt); }
-
+      function initCanvas() { resize(); pts = Array.from({length:COUNT}, mkPt); }
       function frame() {
-        ctx.clearRect(0, 0, W, H);
-
-        for (var i = 0; i < pts.length; i++) {
-          var p = pts[i];
-          p.x += p.vx;
-          p.y += p.vy;
-          if (p.x < -8) p.x = W + 8; else if (p.x > W + 8) p.x = -8;
-          if (p.y < -8) p.y = H + 8; else if (p.y > H + 8) p.y = -8;
-
-          // Glow halo for larger nodes
-          if (p.r > 1.35) {
-            var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 5);
-            g.addColorStop(0, 'rgba(' + C + ',0.16)');
-            g.addColorStop(1, 'rgba(' + C + ',0)');
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r * 5, 0, 6.2832);
-            ctx.fillStyle = g;
-            ctx.fill();
+        ctx.clearRect(0,0,W,H);
+        for (var i=0;i<pts.length;i++) {
+          var p=pts[i];
+          p.x+=p.vx; p.y+=p.vy;
+          if(p.x<-8)p.x=W+8; else if(p.x>W+8)p.x=-8;
+          if(p.y<-8)p.y=H+8; else if(p.y>H+8)p.y=-8;
+          if(p.r>1.35){
+            var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*5);
+            g.addColorStop(0,'rgba('+C+',.16)'); g.addColorStop(1,'rgba('+C+',0)');
+            ctx.beginPath(); ctx.arc(p.x,p.y,p.r*5,0,6.2832);
+            ctx.fillStyle=g; ctx.fill();
           }
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, 6.2832);
-          ctx.fillStyle = 'rgba(' + C + ',' + p.a + ')';
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.2832);
+          ctx.fillStyle='rgba('+C+','+p.a+')'; ctx.fill();
         }
-
-        // Connections
-        for (var i = 0; i < pts.length - 1; i++) {
-          for (var j = i + 1; j < pts.length; j++) {
-            var dx = pts[i].x - pts[j].x;
-            var dy = pts[i].y - pts[j].y;
-            var d  = Math.sqrt(dx * dx + dy * dy);
-            if (d < LINK) {
-              ctx.beginPath();
-              ctx.moveTo(pts[i].x, pts[i].y);
-              ctx.lineTo(pts[j].x, pts[j].y);
-              ctx.strokeStyle = 'rgba(' + C + ',' + (0.2 * (1 - d / LINK)) + ')';
-              ctx.lineWidth = 0.65;
-              ctx.stroke();
-            }
+        for(var i=0;i<pts.length-1;i++)for(var j=i+1;j<pts.length;j++){
+          var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+          if(d<LINK){
+            ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
+            ctx.strokeStyle='rgba('+C+','+(0.2*(1-d/LINK))+')';
+            ctx.lineWidth=.65; ctx.stroke();
           }
         }
-
         requestAnimationFrame(frame);
       }
-
       window.addEventListener('resize', resize);
-      init();
-      frame();
-    })();
+      initCanvas(); frame();
+    }
 
-    // ── Scroll fade-in ──
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) e.target.classList.add('visible');
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('[data-animate]').forEach(function (el) {
-      observer.observe(el);
+    /* ── Word animation stagger ── */
+    document.querySelectorAll('.animate-words').forEach(function(el) {
+      el.innerHTML = el.textContent.trim().split(/\s+/).map(function(w, i) {
+        var cls = (i === 5) ? 'word accent-word' : 'word'; /* "real" gets accent */
+        return '<span class="' + cls + '" style="animation-delay:' + (i * 0.075 + 0.1) + 's">' + w + '</span>';
+      }).join(' ');
     });
 
-    // ── Footer year ──
+    /* ── Nav scroll class ── */
+    var header = document.getElementById('site-header');
+    window.addEventListener('scroll', function() {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    }, {passive: true});
+
+    /* ── Custom cursor ── */
+    var cur = document.querySelector('.cursor');
+    var ring = document.querySelector('.cursor-ring');
+    if (cur && ring) {
+      var mx=0,my=0,rx=0,ry=0;
+      document.addEventListener('mousemove', function(e) {
+        mx=e.clientX; my=e.clientY;
+        cur.style.left=mx+'px'; cur.style.top=my+'px';
+      }, {passive:true});
+      (function animRing() {
+        rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
+        ring.style.left=rx+'px'; ring.style.top=ry+'px';
+        requestAnimationFrame(animRing);
+      })();
+      document.querySelectorAll('a,button,.tilt').forEach(function(el) {
+        el.addEventListener('mouseenter', function() { cur.classList.add('hovered'); ring.classList.add('hovered'); });
+        el.addEventListener('mouseleave', function() { cur.classList.remove('hovered'); ring.classList.remove('hovered'); });
+      });
+    }
+
+    /* ── 3D tilt on cards ── */
+    document.querySelectorAll('.tilt').forEach(function(card) {
+      card.addEventListener('mousemove', function(e) {
+        var r=card.getBoundingClientRect();
+        var x=(e.clientX-r.left)/r.width-.5;
+        var y=(e.clientY-r.top)/r.height-.5;
+        card.style.transition='transform 0.08s ease';
+        card.style.transform='perspective(700px) rotateX('+(y*-9)+'deg) rotateY('+(x*9)+'deg) translateZ(6px)';
+      });
+      card.addEventListener('mouseleave', function() {
+        card.style.transition='transform 0.5s cubic-bezier(0.2,0,0.2,1)';
+        card.style.transform='perspective(700px) rotateX(0) rotateY(0) translateZ(0)';
+      });
+    });
+
+    /* ── Scroll animations ── */
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if(e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-animate]').forEach(function(el) { observer.observe(el); });
+
+    /* ── Stat counter animation ── */
+    var statsObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.querySelectorAll('.count').forEach(function(el) {
+          var target = parseInt(el.dataset.target);
+          var start = performance.now();
+          var dur = 1800;
+          (function tick(now) {
+            var p = Math.min((now - start) / dur, 1);
+            var ease = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.round(ease * target).toLocaleString();
+            if (p < 1) requestAnimationFrame(tick);
+          })(start);
+        });
+        statsObs.unobserve(entry.target);
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.stats-grid').forEach(function(el) { statsObs.observe(el); });
+
+    /* ── Footer year ── */
     document.getElementById('year').textContent = new Date().getFullYear();
+  })();
   </script>
 
 </body>
