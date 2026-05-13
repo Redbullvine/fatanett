@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
   <header class="site-header">
     <div class="container header-inner">
       <a href="index.html" class="logo">Fatanett<span>.LLC</span></a>
@@ -29,7 +30,12 @@
   </header>
 
   <main>
+
+    <!-- ── HERO ── -->
     <section class="hero hero-navy">
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero-glow" aria-hidden="true"></div>
+
       <div class="container hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">Custom websites, apps, and operational software</p>
@@ -76,11 +82,19 @@
           </div>
         </aside>
       </div>
+
+      <!-- Wave transition into services section -->
+      <div class="hero-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,45 C240,70 480,15 720,40 C960,65 1200,18 1440,45 L1440,70 L0,70 Z" fill="#051f1b"/>
+        </svg>
+      </div>
     </section>
 
+    <!-- ── SERVICES ── -->
     <section id="services" class="section section-slate">
       <div class="container">
-        <div class="section-heading">
+        <div class="section-heading" data-animate>
           <p class="eyebrow">Services</p>
           <h2>What Fatanett builds</h2>
           <p class="section-lead">
@@ -90,42 +104,42 @@
         </div>
 
         <div class="service-grid">
-          <article class="service-card">
+          <article class="service-card" data-animate>
             <div class="service-icon" aria-hidden="true">01</div>
             <h3>Business Websites</h3>
             <p>Modern, high-trust websites for companies that need better presentation, clearer offers, and stronger lead flow.</p>
             <a href="#packages" class="text-link">View website packages</a>
           </article>
 
-          <article class="service-card">
+          <article class="service-card" data-animate>
             <div class="service-icon" aria-hidden="true">02</div>
             <h3>Careers / Hiring Platforms</h3>
             <p>Careers pages, job listings, and applicant workflows that make hiring easier for growing teams.</p>
             <a href="#packages" class="text-link">See hiring package</a>
           </article>
 
-          <article class="service-card">
+          <article class="service-card" data-animate>
             <div class="service-icon" aria-hidden="true">03</div>
             <h3>Custom App Design</h3>
             <p>Purpose-built interfaces and web apps for teams that need more than an off-the-shelf tool can offer.</p>
             <a href="#platforms" class="text-link">Explore live products</a>
           </article>
 
-          <article class="service-card">
+          <article class="service-card" data-animate>
             <div class="service-icon" aria-hidden="true">04</div>
             <h3>Workflow &amp; Operations Systems</h3>
             <p>Internal systems for tracking tasks, approvals, submissions, records, onboarding, and business process flow.</p>
             <a href="#industries" class="text-link">See use cases</a>
           </article>
 
-          <article class="service-card">
+          <article class="service-card" data-animate>
             <div class="service-icon" aria-hidden="true">05</div>
             <h3>Telecom / Field Verification Tools</h3>
             <p>Proof capture, status tracking, and field-ready operational tools built for teams that need accountability in motion.</p>
             <a href="#platforms" class="text-link">View SpecCom</a>
           </article>
 
-          <article class="service-card">
+          <article class="service-card" data-animate>
             <div class="service-icon" aria-hidden="true">06</div>
             <h3>Branding / Product Launch Support</h3>
             <p>Launch-focused design support, messaging cleanup, and product presentation for new offers and digital rollouts.</p>
@@ -135,9 +149,10 @@
       </div>
     </section>
 
+    <!-- ── PACKAGES ── -->
     <section id="packages" class="section section-night">
       <div class="container">
-        <div class="section-heading section-heading-split">
+        <div class="section-heading section-heading-split" data-animate>
           <div>
             <p class="eyebrow">Packages</p>
             <h2>Website and platform packages with real scope visibility</h2>
@@ -149,7 +164,7 @@
         </div>
 
         <div class="package-grid">
-          <article class="package-card">
+          <article class="package-card" data-animate>
             <p class="package-tier">Starter Website</p>
             <h3>Starting at $2,500</h3>
             <p class="package-summary">For small businesses that need a polished online presence and a stronger first impression.</p>
@@ -161,7 +176,7 @@
             <a class="btn btn-secondary btn-block" href="#contact">Request Custom Quote</a>
           </article>
 
-          <article class="package-card featured-package">
+          <article class="package-card featured-package" data-animate>
             <p class="package-tier">Growth Website + Forms</p>
             <h3>Starting at $5,000</h3>
             <p class="package-summary">For companies that need more pages, stronger conversion structure, and better lead capture.</p>
@@ -173,7 +188,7 @@
             <a class="btn btn-primary btn-block" href="#contact">Talk About Your Project</a>
           </article>
 
-          <article class="package-card">
+          <article class="package-card" data-animate>
             <p class="package-tier">Website + Hiring Package</p>
             <h3>Starting at $8,500</h3>
             <p class="package-summary">For teams that need a public website plus a careers section, job listings, and application workflow.</p>
@@ -185,7 +200,7 @@
             <a class="btn btn-secondary btn-block" href="#contact">Request Custom Quote</a>
           </article>
 
-          <article class="package-card">
+          <article class="package-card" data-animate>
             <p class="package-tier">Operations Package</p>
             <h3>Starting at $15,000+</h3>
             <p class="package-summary">For companies that need a website, workflow tools, onboarding flow, and deeper app or platform integration.</p>
@@ -205,9 +220,10 @@
       </div>
     </section>
 
+    <!-- ── PLATFORMS ── -->
     <section id="platforms" class="section section-slate">
       <div class="container">
-        <div class="section-heading">
+        <div class="section-heading" data-animate>
           <p class="eyebrow">Featured Products</p>
           <h2>Live products, internal tools, and platforms in active development</h2>
           <p class="section-lead">
@@ -217,7 +233,7 @@
         </div>
 
         <div class="platform-grid platform-grid-dual">
-          <article class="app-card app-card-featured app-card-featured-primary">
+          <article class="app-card app-card-featured app-card-featured-primary" data-animate>
             <div class="app-media">
               <video class="app-preview" autoplay muted loop playsinline webkit-playsinline preload="metadata">
                 <source src="assets/previews/tadaah-previews.mp4" type="video/mp4" />
@@ -244,7 +260,7 @@
             </div>
           </article>
 
-          <article class="app-card app-card-featured app-card-featured-accent">
+          <article class="app-card app-card-featured app-card-featured-accent" data-animate>
             <div class="app-media">
               <video class="app-preview" autoplay muted loop playsinline webkit-playsinline preload="metadata">
                 <source src="assets/previews/speccom-previews.mp4" type="video/mp4" />
@@ -273,7 +289,7 @@
         </div>
 
         <div class="supporting-products">
-          <div class="supporting-copy">
+          <div class="supporting-copy" data-animate>
             <p class="eyebrow">Supporting examples</p>
             <h3>Additional live products and smaller concepts</h3>
             <p>
@@ -283,7 +299,7 @@
           </div>
 
           <div class="platform-side-grid">
-            <article class="app-card app-card-compact">
+            <article class="app-card app-card-compact" data-animate>
               <div class="app-media">
                 <video class="app-preview" autoplay muted loop playsinline webkit-playsinline preload="metadata">
                   <source src="assets/previews/exitmap-previews.mp4" type="video/mp4" />
@@ -302,7 +318,7 @@
               </div>
             </article>
 
-            <article class="app-card app-card-compact">
+            <article class="app-card app-card-compact" data-animate>
               <div class="app-media">
                 <video class="app-preview" autoplay muted loop playsinline webkit-playsinline preload="metadata">
                   <source src="assets/previews/candyapple-previrews.mp4" type="video/mp4" />
@@ -325,27 +341,28 @@
       </div>
     </section>
 
+    <!-- ── WHY FATANETT ── -->
     <section id="why-fatanett" class="section section-night">
       <div class="container">
-        <div class="section-heading">
+        <div class="section-heading" data-animate>
           <p class="eyebrow">Why Fatanett</p>
           <h2>Built for companies that need useful systems, not agency fluff</h2>
         </div>
 
         <div class="reason-grid">
-          <article class="reason-card">
+          <article class="reason-card" data-animate>
             <h3>Practical tools over bloated software</h3>
             <p>We focus on what your team actually needs to ship, track, capture, and improve, without burying the project in unnecessary layers.</p>
           </article>
-          <article class="reason-card">
+          <article class="reason-card" data-animate>
             <h3>Real-world operational thinking</h3>
             <p>Our work is informed by how companies operate in the field, manage submissions, hire people, and keep processes moving.</p>
           </article>
-          <article class="reason-card">
+          <article class="reason-card" data-animate>
             <h3>Fast iteration with business purpose</h3>
             <p>We move quickly, but we do it around a clear business outcome: better lead flow, cleaner workflows, or stronger operational visibility.</p>
           </article>
-          <article class="reason-card">
+          <article class="reason-card" data-animate>
             <h3>Focused support and direct communication</h3>
             <p>You get a collaborative build process with sharper decisions, tighter scope awareness, and less of the handoff chaos that slows projects down.</p>
           </article>
@@ -353,9 +370,10 @@
       </div>
     </section>
 
+    <!-- ── INDUSTRIES ── -->
     <section id="industries" class="section section-slate">
       <div class="container">
-        <div class="section-heading">
+        <div class="section-heading" data-animate>
           <p class="eyebrow">Industries &amp; Use Cases</p>
           <h2>Who this work is built for</h2>
           <p class="section-lead">
@@ -364,27 +382,27 @@
         </div>
 
         <div class="industry-grid">
-          <article class="industry-card">
+          <article class="industry-card" data-animate>
             <h3>Telecom contractors</h3>
             <p>Teams that need field verification, proof capture, workflow consistency, and stronger operational visibility.</p>
           </article>
-          <article class="industry-card">
+          <article class="industry-card" data-animate>
             <h3>Field service companies</h3>
             <p>Operations that rely on crews, dispatch flow, job status tracking, and accountable reporting from the field.</p>
           </article>
-          <article class="industry-card">
+          <article class="industry-card" data-animate>
             <h3>Construction-adjacent operations</h3>
             <p>Businesses with moving parts across people, sites, timelines, and documentation requirements.</p>
           </article>
-          <article class="industry-card">
+          <article class="industry-card" data-animate>
             <h3>Small businesses needing a modern website</h3>
             <p>Owners who need a premium online presence that actually explains the offer and drives inquiries.</p>
           </article>
-          <article class="industry-card">
+          <article class="industry-card" data-animate>
             <h3>Companies needing internal tools</h3>
             <p>Teams that have outgrown spreadsheets, patchwork forms, and manual process handling.</p>
           </article>
-          <article class="industry-card">
+          <article class="industry-card" data-animate>
             <h3>Teams needing proof, tracking, and workflows</h3>
             <p>Organizations that need cleaner submission flows, better visibility, and software aligned to how they already work.</p>
           </article>
@@ -392,13 +410,14 @@
       </div>
     </section>
 
+    <!-- ── CONTACT ── -->
     <section id="contact" class="section section-contact">
       <div class="container contact-layout">
-        <div class="contact-copy">
+        <div class="contact-copy" data-animate>
           <p class="eyebrow">Start the conversation</p>
           <h2>Tell us what you need built.</h2>
           <p class="section-lead">
-            Need a website, careers portal, business app, or full operational platform? Let’s talk about the scope,
+            Need a website, careers portal, business app, or full operational platform? Let's talk about the scope,
             timeline, and what would actually help your team.
           </p>
           <div class="contact-details">
@@ -411,7 +430,7 @@
           </div>
         </div>
 
-        <form class="contact-form" name="homepage-inquiry" method="POST" data-netlify="true">
+        <form class="contact-form" name="homepage-inquiry" method="POST" data-netlify="true" data-animate>
           <input type="hidden" name="form-name" value="homepage-inquiry" />
           <label>
             Name
@@ -445,15 +464,110 @@
         </form>
       </div>
     </section>
+
   </main>
 
   <footer class="site-footer">
     <div class="container footer-inner">
       <p>&copy; <span id="year"></span> Fatanett, LLC. All rights reserved.</p>
     </div>
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
   </footer>
+
+  <script>
+    // ── Particle network canvas ──
+    (function () {
+      var canvas = document.getElementById('hero-canvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var W, H, pts;
+      var COUNT = 85;
+      var LINK  = 128;
+      var C     = '126,224,195';
+
+      function resize() {
+        W = canvas.width  = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+      }
+
+      function mkPt() {
+        return {
+          x:  Math.random() * W,
+          y:  Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.36,
+          vy: (Math.random() - 0.5) * 0.36,
+          r:  Math.random() * 1.5 + 0.5,
+          a:  Math.random() * 0.45 + 0.25
+        };
+      }
+
+      function init() { resize(); pts = Array.from({ length: COUNT }, mkPt); }
+
+      function frame() {
+        ctx.clearRect(0, 0, W, H);
+
+        for (var i = 0; i < pts.length; i++) {
+          var p = pts[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < -8) p.x = W + 8; else if (p.x > W + 8) p.x = -8;
+          if (p.y < -8) p.y = H + 8; else if (p.y > H + 8) p.y = -8;
+
+          // Glow halo for larger nodes
+          if (p.r > 1.35) {
+            var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 5);
+            g.addColorStop(0, 'rgba(' + C + ',0.16)');
+            g.addColorStop(1, 'rgba(' + C + ',0)');
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 5, 0, 6.2832);
+            ctx.fillStyle = g;
+            ctx.fill();
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+          ctx.fillStyle = 'rgba(' + C + ',' + p.a + ')';
+          ctx.fill();
+        }
+
+        // Connections
+        for (var i = 0; i < pts.length - 1; i++) {
+          for (var j = i + 1; j < pts.length; j++) {
+            var dx = pts[i].x - pts[j].x;
+            var dy = pts[i].y - pts[j].y;
+            var d  = Math.sqrt(dx * dx + dy * dy);
+            if (d < LINK) {
+              ctx.beginPath();
+              ctx.moveTo(pts[i].x, pts[i].y);
+              ctx.lineTo(pts[j].x, pts[j].y);
+              ctx.strokeStyle = 'rgba(' + C + ',' + (0.2 * (1 - d / LINK)) + ')';
+              ctx.lineWidth = 0.65;
+              ctx.stroke();
+            }
+          }
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      window.addEventListener('resize', resize);
+      init();
+      frame();
+    })();
+
+    // ── Scroll fade-in ──
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('[data-animate]').forEach(function (el) {
+      observer.observe(el);
+    });
+
+    // ── Footer year ──
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
 </body>
 </html>
