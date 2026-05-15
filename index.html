@@ -46,14 +46,14 @@
       <div class="container">
         <p class="hero-eyebrow">Custom websites, apps &amp; operational software</p>
         <h1 class="hero-headline animate-words">
-          Practical digital tools built for real business use.
+          Building digital ideas into real experiences.
         </h1>
         <p class="hero-sub">
-          Fatanett designs and builds custom websites, business apps, workflow systems, and field
-          operations tools that teams can actually run on every day.
+          Fatanett creates custom websites, apps, interactive demos, and digital systems that help
+          ideas become something people can see, use, and remember.
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#contact">Request a Quote</a>
+          <a class="btn btn-primary" href="#contact">Start a Project</a>
           <a class="btn btn-secondary" href="#packages">View Packages</a>
         </div>
       </div>
@@ -683,7 +683,7 @@
     /* ── Word animation stagger ── */
     document.querySelectorAll('.animate-words').forEach(function(el) {
       el.innerHTML = el.textContent.trim().split(/\s+/).map(function(w, i) {
-        var cls = (i === 5) ? 'word accent-word' : 'word'; /* "real" gets accent */
+        var cls = (i === 5) ? 'word accent-word' : 'word'; /* "experiences." gets accent */
         return '<span class="' + cls + '" style="animation-delay:' + (i * 0.075 + 0.1) + 's">' + w + '</span>';
       }).join(' ');
     });
