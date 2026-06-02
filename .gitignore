@@ -1,2 +1,6 @@
 # Local Netlify folder
 .netlify
+
+# Business documents (not web assets)
+SPEC_COM_LLC/
+Spec_Com_TDS_001.xlsx

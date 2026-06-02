@@ -443,21 +443,21 @@
                 <!-- ══ BODY GROUP (bobs while walking) ══ -->
                 <g class="body-grp">
 
-                  <!-- ── Wi-Fi HEAD — V-fan arcs (ry > rx = tall, not flat) ── -->
+                  <!-- ── Wi-Fi HEAD — true fan arcs, all centered on the dot (40,37) ── -->
                   <!-- soft teal halo -->
-                  <ellipse cx="40" cy="18" rx="28" ry="22" fill="rgba(6,182,212,0.08)"/>
+                  <ellipse cx="40" cy="22" rx="26" ry="18" fill="rgba(6,182,212,0.08)"/>
                   <g class="wifi-head" filter="url(#gs)">
-                    <!-- outer arc: rx=24 (half chord), ry=30 → arcs tall above endpoints -->
+                    <!-- outer arc r=27, endpoints at 215°/325° from (40,37) → y≈22 -->
                     <path class="wifi-a3"
-                      d="M 16,34 A 24,30 0 0,1 64,34"
+                      d="M 18,22 A 27,27 0 0,1 62,22"
                       fill="none" stroke="url(#wifiGrad)" stroke-width="6" stroke-linecap="round"/>
-                    <!-- middle arc: rx=17, ry=21 -->
+                    <!-- middle arc r=19, endpoints → y≈26 -->
                     <path class="wifi-a2"
-                      d="M 23,34 A 17,21 0 0,1 57,34"
+                      d="M 24,26 A 19,19 0 0,1 56,26"
                       fill="none" stroke="url(#wifiGrad)" stroke-width="6" stroke-linecap="round"/>
-                    <!-- inner arc: rx=10, ry=12 -->
+                    <!-- inner arc r=11, endpoints → y≈31 -->
                     <path class="wifi-a1"
-                      d="M 30,34 A 10,12 0 0,1 50,34"
+                      d="M 31,31 A 11,11 0 0,1 49,31"
                       fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
                     <!-- tiny origin dot -->
                     <circle class="wifi-dot" cx="40" cy="37" r="2"
