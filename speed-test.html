@@ -816,7 +816,7 @@
     }
 
     function measureDownload() {
-      var url = 'https://www.cloudflare.com/resources/images/slt3lc6tev37/4Epqf7WAnRhME3v4mJovDj/4b23efdf99c5f9fb82cfb41a32e2a9e6/argo-smart-routing-diagram.png?_t=' + Date.now();
+      var url = 'https://speed.cloudflare.com/__down?bytes=5000000&_t=' + Date.now();
       var t0 = performance.now();
       return fetch(url, {cache:'no-store'})
         .then(function(r){ return r.blob(); })
