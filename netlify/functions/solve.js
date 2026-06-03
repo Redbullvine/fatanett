@@ -30,35 +30,34 @@ exports.handler = async function (event) {
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 1024,
-        system: `You solve math problems and word problems with the rigor of an MIT mathematician.
-Think through the problem carefully, then respond in this EXACT format — no other text:
-STEPS:[step 1]|[step 2]|[step 3]|[step 4]
-ANSWER:[final answer]
+        system: `You solve math problems and word problems with the precision of an MIT mathematician.
+Respond with ONLY valid JSON — no markdown, no explanation, nothing else:
+{"steps":["step 1","step 2","step 3"],"answer":"final answer"}
 
 Rules:
-- 2 to 4 steps, each a single clean equation or key calculation line
-- Use proper math symbols: ×, ÷, =, ≈, π, √, ², ³, −
-- For calculus problems: show the setup, the critical equation, and the result
-- ANSWER includes units when relevant (e.g. "105 trays", "≈ $147,283", "150 miles")
-- No spaces around the pipe | between steps
-- If input has no mathematical content, respond with exactly: STEPS:—\nANSWER:Invalid`,
-        messages: [
-          { role: 'user', content: problem },
-          { role: 'assistant', content: 'STEPS:' }
-        ]
+- steps: 2 to 4 key calculation lines using proper symbols: ×, ÷, =, ≈, π, √, ², ³, −
+- For calculus problems show: volume/cost setup, substitution, derivative = 0, result
+- answer: final result with units when relevant (e.g. "105 trays", "≈ $147,283", "150 miles")
+- For non-math input: {"steps":[],"answer":"Invalid"}`,
+        messages: [{ role: 'user', content: problem }]
       })
     });
 
     const data = await res.json();
+    if (data.type === 'error') {
+      return { statusCode: 502, body: JSON.stringify({ error: data.error?.message || 'API error' }) };
+    }
     const textBlock = data.content?.find(function(b) { return b.type === 'text'; });
-    const raw = 'STEPS:' + (textBlock?.text?.trim() ?? '');
+    const raw = textBlock?.text?.trim() ?? '';
 
-    const stepsMatch = raw.match(/STEPS:(.*)/);
-    const answerMatch = raw.match(/ANSWER:(.*)/);
-    const steps = stepsMatch
-      ? stepsMatch[1].split('|').map(function(s){ return s.trim(); }).filter(Boolean)
-      : [];
-    const answer = answerMatch ? answerMatch[1].trim() : raw;
+    let steps = [], answer = 'Error';
+    try {
+      const parsed = JSON.parse(raw);
+      steps  = Array.isArray(parsed.steps) ? parsed.steps : [];
+      answer = parsed.answer || 'Error';
+    } catch (_) {
+      answer = raw || 'Error';
+    }
 
     return {
       statusCode: 200,
