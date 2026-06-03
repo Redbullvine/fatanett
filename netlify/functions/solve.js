@@ -42,13 +42,16 @@ Rules:
 - ANSWER includes units when relevant (e.g. "105 trays", "≈ $147,283", "150 miles")
 - No spaces around the pipe | between steps
 - If input has no mathematical content, respond with exactly: STEPS:—\nANSWER:Invalid`,
-        messages: [{ role: 'user', content: problem }]
+        messages: [
+          { role: 'user', content: problem },
+          { role: 'assistant', content: 'STEPS:' }
+        ]
       })
     });
 
     const data = await res.json();
     const textBlock = data.content?.find(function(b) { return b.type === 'text'; });
-    const raw = textBlock?.text?.trim() ?? '';
+    const raw = 'STEPS:' + (textBlock?.text?.trim() ?? '');
 
     const stepsMatch = raw.match(/STEPS:(.*)/);
     const answerMatch = raw.match(/ANSWER:(.*)/);
