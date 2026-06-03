@@ -346,6 +346,15 @@
       letter-spacing: -.01em;
       line-height: 1.2;
     }
+    .answer-final.rejected {
+      align-items: flex-start;
+    }
+    .answer-final.rejected .answer-val {
+      font-size: .95rem;
+      line-height: 1.5;
+      max-width: 100%;
+      letter-spacing: 0;
+    }
 
     /* ── DATA PACKETS — teal to match Relay ── */
     .packet {
@@ -947,9 +956,10 @@
     }
 
     /* ══════════════════════════════════
-       SAFE MATH EVALUATOR
-       Only allows: digits, + - * / % ^ ( ) . space, sqrt, pi, abs
+       RELAY SERVER SOLVER
     ══════════════════════════════════ */
+    var verifiedSolverMessage = 'Relay can solve arithmetic and supported formulas directly. This advanced problem needs a verified solver.';
+
     function solveWordProblem(problem) {
       return fetch('/.netlify/functions/solve', {
         method: 'POST',
@@ -957,8 +967,37 @@
         body: JSON.stringify({ problem: problem })
       })
       .then(function(r) { return r.json(); })
-      .then(function(d) { return { steps: d.steps || [], answer: d.answer || 'Error' }; })
-      .catch(function() { return { steps: [], answer: 'Error' }; });
+      .then(function(d) {
+        if (d.error) {
+          return {
+            status: 'rejected',
+            title: 'Unsupported advanced problem',
+            message: d.error,
+            answer: d.error,
+            steps: ['Unsupported advanced problem', d.error]
+          };
+        }
+
+        return {
+          status: d.status || 'rejected',
+          solver: d.solver || '',
+          title: d.title || '',
+          problem: d.problem || problem,
+          expression: d.expression || '',
+          message: d.message || '',
+          steps: Array.isArray(d.steps) ? d.steps : [],
+          answer: d.answer || 'Error'
+        };
+      })
+      .catch(function() {
+        return {
+          status: 'rejected',
+          title: 'Unsupported advanced problem',
+          message: verifiedSolverMessage,
+          answer: verifiedSolverMessage,
+          steps: ['Unsupported advanced problem', verifiedSolverMessage]
+        };
+      });
     }
 
     /* ══════════════════════════════════
@@ -994,6 +1033,31 @@
     function setState(s)     { charWrap.className = 'char-wrap ' + s; }
 
     function sleep(ms) { return new Promise(function(r){ setTimeout(r, ms); }); }
+
+    function buildResponseLines(originalProblem, solveResult) {
+      var answer = solveResult.answer || 'Error';
+
+      if (solveResult.status === 'rejected') {
+        return [
+          solveResult.title || 'Unsupported advanced problem',
+          solveResult.message || answer
+        ];
+      }
+
+      var lines = ['Problem: ' + (solveResult.problem || originalProblem)];
+      if (solveResult.expression) {
+        var expressionLabel = solveResult.solver === 'supportedWordProblemSolver'
+          ? 'Extracted expression'
+          : 'Expression';
+        lines.push(expressionLabel + ': ' + solveResult.expression);
+      }
+      lines.push('Answer: ' + answer);
+      return lines;
+    }
+
+    function truncateLabel(text, maxLength) {
+      return text.length > maxLength ? text.slice(0, maxLength).trimEnd() + '…' : text;
+    }
 
     /* smooth character movement */
     function moveChar(targetX, ms) {
@@ -1086,7 +1150,10 @@
       /* reset */
       answerSteps.innerHTML = '<p class="mon-answer-empty">Waiting for Relay…</p>';
       var answerFinalEl = document.getElementById('answerFinal');
-      if (answerFinalEl) answerFinalEl.style.display = 'none';
+      if (answerFinalEl) {
+        answerFinalEl.classList.remove('rejected');
+        answerFinalEl.style.display = 'none';
+      }
       [pingCard, dlCard, ulCard].forEach(function(c){ c.classList.remove('lit'); });
       pingVal.textContent = dlVal.textContent = ulVal.textContent = '—';
 
@@ -1138,7 +1205,8 @@
       .then(function(results) {
         var ping = results[0], dl = results[1], ul = results[2], solveResult = results[3];
         var answer = solveResult.answer;
-        var steps  = solveResult.steps;
+        var isRejected = solveResult.status === 'rejected';
+        var responseLines = buildResponseLines(expr, solveResult);
         /* 6 — celebrate */
         charWrap.style.transform = 'scaleX(1)';
         setState('celebrating');
@@ -1148,21 +1216,25 @@
         [pingCard, dlCard, ulCard].forEach(function(c){ c.classList.add('lit'); });
         /* build steps — stagger each line in like a chalkboard */
         answerSteps.innerHTML = '';
-        steps.forEach(function(step, i) {
+        responseLines.forEach(function(step, i) {
           var el = document.createElement('div');
           el.className = 'answer-step';
           el.textContent = step;
           answerSteps.appendChild(el);
           setTimeout(function(){ el.classList.add('visible'); }, i * 220);
         });
-        /* Show a short label — truncate long word problems to 48 chars */
-        var label = expr.length > 48 ? expr.slice(0, 48).trimEnd() + '…' : expr;
+        var label = isRejected
+          ? (solveResult.title || 'Unsupported advanced problem')
+          : truncateLabel(solveResult.expression || expr, 48);
         answerEq.textContent  = label;
-        answerVal.textContent = answer;
+        answerVal.textContent = isRejected ? (solveResult.message || answer) : answer;
         var answerFinal = document.getElementById('answerFinal');
-        if (answerFinal) answerFinal.style.display = 'flex';
+        if (answerFinal) {
+          answerFinal.classList.toggle('rejected', isRejected);
+          answerFinal.style.display = 'flex';
+        }
         answerCard.classList.add('show');
-        showBubble('✅ ' + answer);
+        showBubble(isRejected ? 'Needs verified solver' : '✅ ' + answer);
         setStatus('Test complete!', true);
         return sleep(1900);
       })
