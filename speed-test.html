@@ -626,7 +626,7 @@
           <div class="math-row">
             <input class="math-input" id="mathInput"
               type="text"
-              placeholder="e.g.  (137 + 423) * 7 / 3"
+              placeholder="e.g.  If a train travels 60 mph for 2.5 hours, how far does it go?"
               maxlength="80"
               spellcheck="false"
               autocomplete="off"/>
@@ -714,21 +714,15 @@
        SAFE MATH EVALUATOR
        Only allows: digits, + - * / % ^ ( ) . space, sqrt, pi, abs
     ══════════════════════════════════ */
-    function safeMath(expr) {
-      if (!expr || !expr.trim()) return null;
-      var clean = expr.trim()
-        .replace(/\^/g, '**')
-        .replace(/sqrt\s*\(/gi, 'Math.sqrt(')
-        .replace(/\bpi\b/gi, 'Math.PI')
-        .replace(/\babs\s*\(/gi, 'Math.abs(');
-      /* whitelist after substitution */
-      var stripped = clean.replace(/Math\.(sqrt|abs|PI|E)\b/g, '');
-      if (/[^0-9\s\+\-\*\/\%\(\)\.]/.test(stripped)) return null;
-      try {
-        var result = Function('"use strict"; return (' + clean + ')')();
-        if (typeof result !== 'number' || !isFinite(result)) return null;
-        return Math.round(result * 1e10) / 1e10;
-      } catch (e) { return null; }
+    function solveWordProblem(problem) {
+      return fetch('/.netlify/functions/solve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ problem: problem })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) { return d.answer || 'Error'; })
+      .catch(function() { return 'Error'; });
     }
 
     /* ══════════════════════════════════
@@ -843,14 +837,9 @@
     function runTest() {
       if (running) return;
       var expr = mathInput.value.trim();
-      var answer = safeMath(expr);
 
       if (!expr) {
-        setStatus('Please enter a math problem first.');
-        return;
-      }
-      if (answer === null) {
-        setStatus('Invalid — use numbers and + − × / % ^ sqrt( ) pi');
+        setStatus('Enter a math problem or word problem first.');
         return;
       }
 
@@ -887,28 +876,28 @@
         /* 3 — measure */
         setStatus('Measuring your connection…', true);
         showBubble('⏱ Measuring…');
-        return Promise.all([measurePing(), measureDownload(), measureUpload()]);
+        return Promise.all([measurePing(), measureDownload(), measureUpload(), solveWordProblem(expr)]);
       })
       .then(function(results) {
-        var ping = results[0], dl = results[1], ul = results[2];
+        var ping = results[0], dl = results[1], ul = results[2], answer = results[3];
         /* 4 — return packets */
         var returns = [0, 160, 320].reduce(function(p, delay) {
           return p.then(function(){ return sleep(delay > 0 ? 160 : 0); })
                   .then(function(){ return firePacket(false); });
         }, Promise.resolve());
         return returns.then(function(){ return sleep(280); })
-                      .then(function(){ return [ping, dl, ul]; });
+                      .then(function(){ return [ping, dl, ul, answer]; });
       })
       .then(function(results) {
-        var ping = results[0], dl = results[1], ul = results[2];
+        var ping = results[0], dl = results[1], ul = results[2], answer = results[3];
         /* 5 — walk back */
         setStatus('Bringing back the answer…', true);
         showBubble('📥 Got it!');
         setState('walking');
-        return moveChar(50, 1700).then(function(){ return [ping, dl, ul]; });
+        return moveChar(50, 1700).then(function(){ return [ping, dl, ul, answer]; });
       })
       .then(function(results) {
-        var ping = results[0], dl = results[1], ul = results[2];
+        var ping = results[0], dl = results[1], ul = results[2], answer = results[3];
         /* 6 — celebrate */
         charWrap.style.transform = 'scaleX(1)';
         setState('celebrating');
@@ -916,8 +905,11 @@
         dlVal.textContent   = dl   != null ? dl   : '—';
         ulVal.textContent   = ul   != null ? ul   : '—';
         [pingCard, dlCard, ulCard].forEach(function(c){ c.classList.add('lit'); });
-        answerEq.textContent  = expr + ' =';
-        answerVal.textContent = answer % 1 === 0 ? answer.toLocaleString() : answer;
+        answerEq.textContent  = expr;
+        var num = parseFloat(answer);
+        answerVal.textContent = (!isNaN(num) && String(num) === answer)
+          ? (num % 1 === 0 ? num.toLocaleString() : num)
+          : answer;
         answerCard.classList.add('show');
         showBubble('✅ ' + answer);
         setStatus('Test complete!', true);
