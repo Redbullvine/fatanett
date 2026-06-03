@@ -299,46 +299,48 @@
     .answer-steps {
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      margin: 14px 0;
-      padding: 14px 16px;
-      background: rgba(0,0,0,0.25);
+      gap: 0;
+      margin: 16px 0 20px;
+      padding: 0;
       border-radius: 10px;
       border: 1px solid var(--border);
+      overflow: hidden;
     }
     .answer-step {
       font-family: var(--font);
-      font-size: .93rem;
+      font-size: 1rem;
       font-weight: 400;
-      line-height: 1.65;
-      color: rgba(255,255,255,0.72);
-      padding: 5px 0;
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      line-height: 1.7;
+      color: rgba(255,255,255,0.88);
+      padding: 13px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,0.03);
       opacity: 0;
       transform: translateY(6px);
       transition: opacity .4s ease, transform .4s ease;
     }
+    .answer-step:nth-child(odd)  { background: rgba(255,255,255,0.025); }
+    .answer-step:nth-child(even) { background: rgba(0,0,0,0.2); }
     .answer-step:last-child { border-bottom: none; }
     .answer-step.visible { opacity: 1; transform: none; }
     .answer-final {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding-top: 4px;
+      gap: 16px;
       flex-wrap: wrap;
     }
     .answer-eq {
       font-family: var(--font);
-      font-size: .78rem;
-      font-weight: 500;
-      letter-spacing: .06em;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .1em;
       text-transform: uppercase;
       color: var(--muted);
       flex-shrink: 0;
     }
     .answer-val {
       font-family: var(--font);
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       font-weight: 800;
       color: var(--accent-hi);
       letter-spacing: -.01em;
@@ -958,7 +960,9 @@
           answerSteps.appendChild(el);
           setTimeout(function(){ el.classList.add('visible'); }, i * 220);
         });
-        answerEq.textContent  = expr;
+        /* Show a short label — truncate long word problems to 48 chars */
+        var label = expr.length > 48 ? expr.slice(0, 48).trimEnd() + '…' : expr;
+        answerEq.textContent  = label;
         answerVal.textContent = answer;
         answerCard.classList.add('show');
         showBubble('✅ ' + answer);
