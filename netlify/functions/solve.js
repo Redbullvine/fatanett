@@ -30,10 +30,12 @@ exports.handler = async function (event) {
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 64,
-        system: `You solve math problems and math word problems.
-Reply with ONLY the final answer — a number or very short phrase.
-No explanation, no working, no sentence.
-If the input cannot be solved as a math or logic problem, reply with exactly: Invalid`,
+        system: `You are a math and word problem solver for a speed test page.
+The user sends you a math equation or a word problem. Solve it and reply with ONLY the final answer.
+Keep answers short — a number, a unit+number, or a brief phrase (e.g. "150 miles", "42", "12 hours").
+No explanation. No working. No full sentences.
+If the problem implies a question even without asking one explicitly, solve for the most obvious answer.
+Only reply with exactly the word Invalid if the input has zero mathematical or logical content (e.g. a greeting, random letters, or a request to do something harmful).`,
         messages: [{ role: 'user', content: problem }]
       })
     });
