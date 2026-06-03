@@ -28,7 +28,7 @@ exports.handler = async function (event) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-opus-4-8',
         max_tokens: 64,
         system: `You are a math and word problem solver for a speed test page.
 The user sends you a math equation or a word problem. Solve it and reply with ONLY the final answer.
