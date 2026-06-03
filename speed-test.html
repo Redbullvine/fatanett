@@ -275,8 +275,8 @@
       border-radius: var(--radius);
       padding: 20px 28px;
       display: flex;
-      align-items: center;
-      gap: 20px;
+      flex-direction: column;
+      gap: 14px;
       opacity: 0;
       transform: translateY(10px);
       transition: opacity .4s ease, transform .4s ease, border-color .3s, box-shadow .3s;
@@ -295,15 +295,46 @@
       text-transform: uppercase;
       letter-spacing: .1em;
       color: var(--muted);
-      margin-bottom: 4px;
     }
-    .answer-eq { font-size: .95rem; color: var(--muted-hi); }
+    .answer-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .answer-step {
+      font-family: 'Courier New', monospace;
+      font-size: .92rem;
+      color: var(--muted-hi);
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .answer-step:last-child { border-bottom: none; }
+    .answer-step.visible { opacity: 1; transform: none; }
+    .answer-final {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .answer-eq {
+      font-size: .85rem;
+      color: var(--muted);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .answer-val {
       font-size: 2rem;
       font-weight: 800;
       font-family: 'Courier New', monospace;
       color: var(--accent-hi);
-      margin-left: auto;
+      white-space: nowrap;
     }
 
     /* ── DATA PACKETS — teal to match Relay ── */
@@ -658,11 +689,12 @@
 
         <!-- ANSWER -->
         <div class="answer-card" id="answerCard">
-          <div>
-            <div class="answer-label">Server Response</div>
-            <div class="answer-eq" id="answerEq">—</div>
+          <div class="answer-label">Server Response</div>
+          <div class="answer-steps" id="answerSteps"></div>
+          <div class="answer-final">
+            <div class="answer-eq" id="answerEq"></div>
+            <div class="answer-val" id="answerVal">—</div>
           </div>
-          <div class="answer-val" id="answerVal">—</div>
         </div>
 
       </div>
@@ -721,8 +753,8 @@
         body: JSON.stringify({ problem: problem })
       })
       .then(function(r) { return r.json(); })
-      .then(function(d) { return d.answer || 'Error'; })
-      .catch(function() { return 'Error'; });
+      .then(function(d) { return { steps: d.steps || [], answer: d.answer || 'Error' }; })
+      .catch(function() { return { steps: [], answer: 'Error' }; });
     }
 
     /* ══════════════════════════════════
@@ -735,9 +767,10 @@
     var serverEl   = document.getElementById('serverEl');
     var runBtn     = document.getElementById('runBtn');
     var mathInput  = document.getElementById('mathInput');
-    var answerCard = document.getElementById('answerCard');
-    var answerEq   = document.getElementById('answerEq');
-    var answerVal  = document.getElementById('answerVal');
+    var answerCard  = document.getElementById('answerCard');
+    var answerSteps = document.getElementById('answerSteps');
+    var answerEq    = document.getElementById('answerEq');
+    var answerVal   = document.getElementById('answerVal');
     var pingCard   = document.getElementById('pingCard');
     var dlCard     = document.getElementById('dlCard');
     var ulCard     = document.getElementById('ulCard');
@@ -848,6 +881,7 @@
 
       /* reset */
       answerCard.classList.remove('show');
+      answerSteps.innerHTML = '';
       [pingCard, dlCard, ulCard].forEach(function(c){ c.classList.remove('lit'); });
       pingVal.textContent = dlVal.textContent = ulVal.textContent = '—';
 
@@ -879,25 +913,27 @@
         return Promise.all([measurePing(), measureDownload(), measureUpload(), solveWordProblem(expr)]);
       })
       .then(function(results) {
-        var ping = results[0], dl = results[1], ul = results[2], answer = results[3];
+        var ping = results[0], dl = results[1], ul = results[2], solveResult = results[3];
         /* 4 — return packets */
         var returns = [0, 160, 320].reduce(function(p, delay) {
           return p.then(function(){ return sleep(delay > 0 ? 160 : 0); })
                   .then(function(){ return firePacket(false); });
         }, Promise.resolve());
         return returns.then(function(){ return sleep(280); })
-                      .then(function(){ return [ping, dl, ul, answer]; });
+                      .then(function(){ return [ping, dl, ul, solveResult]; });
       })
       .then(function(results) {
-        var ping = results[0], dl = results[1], ul = results[2], answer = results[3];
+        var ping = results[0], dl = results[1], ul = results[2], solveResult = results[3];
         /* 5 — walk back */
         setStatus('Bringing back the answer…', true);
         showBubble('📥 Got it!');
         setState('walking');
-        return moveChar(50, 1700).then(function(){ return [ping, dl, ul, answer]; });
+        return moveChar(50, 1700).then(function(){ return [ping, dl, ul, solveResult]; });
       })
       .then(function(results) {
-        var ping = results[0], dl = results[1], ul = results[2], answer = results[3];
+        var ping = results[0], dl = results[1], ul = results[2], solveResult = results[3];
+        var answer = solveResult.answer;
+        var steps  = solveResult.steps;
         /* 6 — celebrate */
         charWrap.style.transform = 'scaleX(1)';
         setState('celebrating');
@@ -905,11 +941,17 @@
         dlVal.textContent   = dl   != null ? dl   : '—';
         ulVal.textContent   = ul   != null ? ul   : '—';
         [pingCard, dlCard, ulCard].forEach(function(c){ c.classList.add('lit'); });
+        /* build steps — stagger each line in like a chalkboard */
+        answerSteps.innerHTML = '';
+        steps.forEach(function(step, i) {
+          var el = document.createElement('div');
+          el.className = 'answer-step';
+          el.textContent = step;
+          answerSteps.appendChild(el);
+          setTimeout(function(){ el.classList.add('visible'); }, i * 220);
+        });
         answerEq.textContent  = expr;
-        var num = parseFloat(answer);
-        answerVal.textContent = (!isNaN(num) && String(num) === answer)
-          ? (num % 1 === 0 ? num.toLocaleString() : num)
-          : answer;
+        answerVal.textContent = answer;
         answerCard.classList.add('show');
         showBubble('✅ ' + answer);
         setStatus('Test complete!', true);

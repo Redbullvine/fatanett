@@ -32,24 +32,36 @@ exports.handler = async function (event) {
         model: 'claude-opus-4-8',
         max_tokens: 8000,
         thinking: { type: 'enabled', budget_tokens: 5000 },
-        system: `You are a math and word problem solver for a speed test page.
-Solve the given math equation or word problem. Work through it carefully.
-Reply with ONLY the final answer — a number, a unit+number, or a brief phrase (e.g. "150 miles", "42", "12 hours").
-No explanation in your reply. No working shown. No full sentences.
-If the problem implies a question without asking one explicitly, answer the implied question.
-Only reply with exactly the word Invalid if the input has zero mathematical or logical content.`,
+        system: `You solve math problems and word problems with the rigor of an MIT mathematician.
+Respond in this EXACT format — no other text:
+STEPS:[step 1]|[step 2]|[step 3]
+ANSWER:[final answer]
+
+Rules:
+- 2 to 4 steps, each a single clean equation or key calculation
+- Use proper math symbols: ×, ÷, =, ≈, π, √, ², ³, −
+- ANSWER includes units when relevant (e.g. "105 trays", "≈ $147,283", "150 miles")
+- No spaces around the pipe | between steps
+- If input has no mathematical content, respond with exactly: STEPS:—\nANSWER:Invalid`,
         messages: [{ role: 'user', content: problem }]
       })
     });
 
     const data = await res.json();
     const textBlock = data.content?.find(function(b) { return b.type === 'text'; });
-    const answer = textBlock?.text?.trim() ?? 'Error';
+    const raw = textBlock?.text?.trim() ?? '';
+
+    const stepsMatch = raw.match(/STEPS:(.*)/);
+    const answerMatch = raw.match(/ANSWER:(.*)/);
+    const steps = stepsMatch
+      ? stepsMatch[1].split('|').map(function(s){ return s.trim(); }).filter(Boolean)
+      : [];
+    const answer = answerMatch ? answerMatch[1].trim() : raw;
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ answer })
+      body: JSON.stringify({ steps: steps, answer: answer })
     };
   } catch (err) {
     return { statusCode: 502, body: JSON.stringify({ error: 'Solve failed' }) };
