@@ -399,6 +399,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      /* vignette the city background so text headings read cleanly */
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.55) 0%,
+        rgba(0,0,0,0.35) 30%,
+        rgba(0,0,0,0.35) 70%,
+        rgba(0,0,0,0.65) 100%
+      );
     }
 
     .monitor-grid {
@@ -408,17 +416,20 @@
       width: 100%;
       max-width: 1300px;
       align-items: start;
+      /* dark scrim behind the panels kills background bleed-through */
+      background: rgba(0,0,0,0.72);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 0 120px 60px rgba(0,0,0,0.85);
     }
 
     /* each panel looks like a monitor/window */
     .monitor {
-      background: rgba(4,8,16,0.78);
+      background: rgba(3,6,14,0.97);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 14px;
       overflow: hidden;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+      box-shadow: 0 8px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
     /* scanline overlay per monitor */
