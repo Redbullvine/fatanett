@@ -25,23 +25,26 @@ exports.handler = async function (event) {
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
+        'anthropic-version': '2023-06-01',
+        'anthropic-beta': 'interleaved-thinking-2025-05-14'
       },
       body: JSON.stringify({
         model: 'claude-opus-4-8',
-        max_tokens: 64,
+        max_tokens: 8000,
+        thinking: { type: 'enabled', budget_tokens: 5000 },
         system: `You are a math and word problem solver for a speed test page.
-The user sends you a math equation or a word problem. Solve it and reply with ONLY the final answer.
-Keep answers short — a number, a unit+number, or a brief phrase (e.g. "150 miles", "42", "12 hours").
-No explanation. No working. No full sentences.
-If the problem implies a question even without asking one explicitly, solve for the most obvious answer.
-Only reply with exactly the word Invalid if the input has zero mathematical or logical content (e.g. a greeting, random letters, or a request to do something harmful).`,
+Solve the given math equation or word problem. Work through it carefully.
+Reply with ONLY the final answer — a number, a unit+number, or a brief phrase (e.g. "150 miles", "42", "12 hours").
+No explanation in your reply. No working shown. No full sentences.
+If the problem implies a question without asking one explicitly, answer the implied question.
+Only reply with exactly the word Invalid if the input has zero mathematical or logical content.`,
         messages: [{ role: 'user', content: problem }]
       })
     });
 
     const data = await res.json();
-    const answer = data.content?.[0]?.text?.trim() ?? 'Error';
+    const textBlock = data.content?.find(function(b) { return b.type === 'text'; });
+    const answer = textBlock?.text?.trim() ?? 'Error';
 
     return {
       statusCode: 200,
