@@ -25,21 +25,20 @@ exports.handler = async function (event) {
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-beta': 'interleaved-thinking-2025-05-14'
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-8',
-        max_tokens: 8000,
-        thinking: { type: 'enabled', budget_tokens: 5000 },
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1024,
         system: `You solve math problems and word problems with the rigor of an MIT mathematician.
-Respond in this EXACT format — no other text:
-STEPS:[step 1]|[step 2]|[step 3]
+Think through the problem carefully, then respond in this EXACT format — no other text:
+STEPS:[step 1]|[step 2]|[step 3]|[step 4]
 ANSWER:[final answer]
 
 Rules:
-- 2 to 4 steps, each a single clean equation or key calculation
+- 2 to 4 steps, each a single clean equation or key calculation line
 - Use proper math symbols: ×, ÷, =, ≈, π, √, ², ³, −
+- For calculus problems: show the setup, the critical equation, and the result
 - ANSWER includes units when relevant (e.g. "105 trays", "≈ $147,283", "150 miles")
 - No spaces around the pipe | between steps
 - If input has no mathematical content, respond with exactly: STEPS:—\nANSWER:Invalid`,
