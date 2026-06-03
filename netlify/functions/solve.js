@@ -10,7 +10,7 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  if (!problem || typeof problem !== 'string' || problem.length > 600) {
+  if (!problem || typeof problem !== 'string' || problem.length > 2000) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid input' }) };
   }
 
