@@ -28,8 +28,8 @@ exports.handler = async function (event) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1024,
+        model: 'claude-sonnet-4-5',
+        max_tokens: 2048,
         system: `You solve math problems and word problems with the precision of an MIT mathematician.
 Respond with ONLY valid JSON — no markdown, no explanation, nothing else:
 {"steps":["step 1","step 2","step 3"],"answer":"final answer"}
@@ -52,11 +52,24 @@ Rules:
 
     let steps = [], answer = 'Error';
     try {
+      // First try direct parse (model followed instructions)
       const parsed = JSON.parse(raw);
       steps  = Array.isArray(parsed.steps) ? parsed.steps : [];
       answer = parsed.answer || 'Error';
     } catch (_) {
-      answer = raw || 'Error';
+      // Model added surrounding text — extract the JSON object from within it
+      const jsonMatch = raw.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          const parsed = JSON.parse(jsonMatch[0]);
+          steps  = Array.isArray(parsed.steps) ? parsed.steps : [];
+          answer = parsed.answer || 'Error';
+        } catch (_2) {
+          answer = 'Error';
+        }
+      } else {
+        answer = 'Error';
+      }
     }
 
     return {
