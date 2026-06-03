@@ -221,6 +221,10 @@ async def solve(req: SolveRequest):
         return _overloaded_response(cls_str, ["No deterministic solver matched this problem."])
 
     # ── 6. LANE 3 — Premium Opus (advanced/expert) ───────────────────────────
+    if os.getenv("ENABLE_PREMIUM_ESCALATION", "true").lower() != "true":
+        _log_request(problem, cls_str, "COMPUTE_OVERLOADED", "premium_disabled", False)
+        return _overloaded_response(cls_str, ["Premium escalation disabled."])
+
     if not rate_limit.check_and_increment():
         _log_request(problem, cls_str, "COMPUTE_OVERLOADED", "rate_limited", False)
         return _overloaded_response(cls_str, ["Daily premium solve limit reached."])

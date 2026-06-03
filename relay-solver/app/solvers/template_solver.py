@@ -49,24 +49,35 @@ _HEMI_PATTERNS = [
         r"hemispher",
         re.IGNORECASE,
     ),
+    re.compile(
+        r"cylindrical\s+(?:tank|pond|container|vessel|silo)\s+.{0,80}hemispher",
+        re.IGNORECASE,
+    ),
 ]
 
-_VOLUME_RE    = re.compile(r"volume\s+(?:of\s+)?(?:[\d,]+(?:\.\d+)?)\s*(?:m³|cubic\s*m|m\^3)", re.IGNORECASE)
-_VOL_VAL_RE   = re.compile(r"volume\s+(?:of\s+)?([\d,]+(?:\.\d+)?)", re.IGNORECASE)
-_WALL_COST_RE = re.compile(r"\$([\d,]+(?:\.\d+)?)\s*/\s*m².*?(?:wall|side|lateral|cylinder)", re.IGNORECASE)
-_WALL_COST2_RE= re.compile(r"(?:wall|side|lateral|cylinder).*?\$([\d,]+(?:\.\d+)?)\s*/\s*m²", re.IGNORECASE)
-_HEMI_COST_RE = re.compile(r"\$([\d,]+(?:\.\d+)?)\s*/\s*m².*?(?:hemi|cap|top|dome)", re.IGNORECASE)
-_HEMI_COST2_RE= re.compile(r"(?:hemi|cap|top|dome).*?\$([\d,]+(?:\.\d+)?)\s*/\s*m²", re.IGNORECASE)
-_BOTT_COST_RE = re.compile(r"\$([\d,]+(?:\.\d+)?)\s*/\s*m².*?(?:bottom|base|floor)", re.IGNORECASE)
-_BOTT_COST2_RE= re.compile(r"(?:bottom|base|floor).*?\$([\d,]+(?:\.\d+)?)\s*/\s*m²", re.IGNORECASE)
+_VOL_VAL_RE = re.compile(
+    r"(?:volume\s+(?:of\s+)?|hold\s+|holds\s+|holding\s+|contain\s+|contains\s+)"
+    r"([\d,]+(?:\.\d+)?)\s*(?:m³|m\^3|cubic\s*m(?:eters?|etres?)?)?",
+    re.IGNORECASE,
+)
+_COST_UNIT = r"(?:/\s*|per\s+)(?:m²|m\^2|square\s*m(?:eters?|etres?)?)"
+_CLAUSE_GAP = r"[^.,;\n]{0,60}"
+_WALL_COST_RE = re.compile(r"\$([\d,]+(?:\.\d+)?)\s*" + _COST_UNIT + _CLAUSE_GAP + r"(?:wall|side|lateral|cylinder)", re.IGNORECASE)
+_WALL_COST2_RE= re.compile(r"(?:wall|side|lateral|cylinder)" + _CLAUSE_GAP + r"\$([\d,]+(?:\.\d+)?)\s*" + _COST_UNIT, re.IGNORECASE)
+_HEMI_COST_RE = re.compile(r"\$([\d,]+(?:\.\d+)?)\s*" + _COST_UNIT + _CLAUSE_GAP + r"(?:hemi|cap|top|dome)", re.IGNORECASE)
+_HEMI_COST2_RE= re.compile(r"(?:hemi|cap|top|dome)" + _CLAUSE_GAP + r"\$([\d,]+(?:\.\d+)?)\s*" + _COST_UNIT, re.IGNORECASE)
+_BOTT_COST_RE = re.compile(r"\$([\d,]+(?:\.\d+)?)\s*" + _COST_UNIT + _CLAUSE_GAP + r"(?:bottom|base|floor)", re.IGNORECASE)
+_BOTT_COST2_RE= re.compile(r"(?:bottom|base|floor)" + _CLAUSE_GAP + r"\$([\d,]+(?:\.\d+)?)\s*" + _COST_UNIT, re.IGNORECASE)
 _FREE_BOTT_RE = re.compile(r"bottom\s+(?:is\s+)?free", re.IGNORECASE)
 
 
 def _extract_cost(text: str, re1, re2) -> Optional[float]:
-    for pattern in (re1, re2):
-        m = pattern.search(text)
-        if m:
-            return float(m.group(1).replace(",", ""))
+    clauses = re.split(r"[.,;\n]|\band\b", text, flags=re.IGNORECASE)
+    for clause in clauses:
+        for pattern in (re1, re2):
+            m = pattern.search(clause)
+            if m:
+                return float(m.group(1).replace(",", ""))
     return None
 
 

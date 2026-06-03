@@ -37,10 +37,13 @@ async def run_verification(
     all_checks: list[str] = []
 
     # ── Step 1: Local numeric checks ─────────────────────────────────────────
+    machine_checks = solver_result.constraint_checks + solver_result.verification_eqs
+    requires_machine_checks = solver_result.method == "opus"
     local_passed, local_detail, local_checks = verify_locally(
         solver_result.raw_values,
-        solver_result.constraint_checks,
+        machine_checks,
         problem_hint=problem,
+        require_equations=requires_machine_checks,
     )
     detail.sympy_passed = local_detail.sympy_passed
     detail.scipy_passed = local_detail.scipy_passed

@@ -1,64 +1,115 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const {
-  solveProblem,
-  VERIFIED_SOLVER_MESSAGE
-} = require('../netlify/functions/solve');
+const { handler } = require('../netlify/functions/solve');
 
-function assertVerifiedSolverRejection(result) {
-  assert.equal(result.status, 'rejected');
-  assert.equal(result.title, 'Unsupported advanced problem');
-  assert.equal(result.message, VERIFIED_SOLVER_MESSAGE);
-  assert.equal(result.answer, VERIFIED_SOLVER_MESSAGE);
+const OVERLOADED = 'Relay is overloaded with computing right now. Please try again later.';
 
-  const visibleResponse = [result.title, result.message].concat(result.steps || []).join(' ');
-  assert.doesNotMatch(visibleResponse, /\b(?:r|h|d)\s*(?:=|~|≈)/i);
-  assert.doesNotMatch(visibleResponse, /\b\d+(?:\.\d+)?\s*m\b/i);
-  assert.doesNotMatch(visibleResponse, /\b(?:width|length|depth|radius|height)\s*(?:=|~|≈)/i);
+function postEvent(problem) {
+  return {
+    httpMethod: 'POST',
+    body: JSON.stringify({ problem })
+  };
 }
 
-test('directExpressionSolver solves simple arithmetic', function() {
-  const result = solveProblem('2+2');
+test('returns compute-overloaded when SOLVER_URL is not configured', async function() {
+  const originalSolverUrl = process.env.SOLVER_URL;
+  delete process.env.SOLVER_URL;
 
-  assert.equal(result.status, 'solved');
-  assert.equal(result.solver, 'directExpressionSolver');
-  assert.equal(result.expression, '2+2');
-  assert.equal(result.answer, '4');
+  try {
+    const response = await handler(postEvent('2+2'));
+    const body = JSON.parse(response.body);
+
+    assert.equal(response.statusCode, 200);
+    assert.equal(body.ok, false);
+    assert.equal(body.status, 'COMPUTE_OVERLOADED');
+    assert.equal(body.verified, false);
+    assert.equal(body.answer_summary, OVERLOADED);
+    assert.equal(body.solution_markdown, OVERLOADED);
+  } finally {
+    if (originalSolverUrl) process.env.SOLVER_URL = originalSolverUrl;
+  }
 });
 
-test('directExpressionSolver solves parenthesized arithmetic safely', function() {
-  const result = solveProblem('(18 * 32 + 11 * 24 - 72 + 96 - 24) / 8');
+test('proxies verified solver responses without changing the contract', async function() {
+  const originalSolverUrl = process.env.SOLVER_URL;
+  const originalFetch = global.fetch;
 
-  assert.equal(result.status, 'solved');
-  assert.equal(result.solver, 'directExpressionSolver');
-  assert.equal(result.expression, '(18 * 32 + 11 * 24 - 72 + 96 - 24) / 8');
-  assert.equal(result.answer, '105');
+  process.env.SOLVER_URL = 'https://solver.example.test';
+  global.fetch = async function(url, options) {
+    assert.equal(url, 'https://solver.example.test/solve');
+    assert.equal(options.method, 'POST');
+    assert.deepEqual(JSON.parse(options.body), { problem: '2+2', network_stats: null });
+
+    return {
+      ok: true,
+      json: async function() {
+        return {
+          ok: true,
+          status: 'LOCAL_VERIFIED',
+          verified: true,
+          method: 'arithmetic',
+          classification: 'simple',
+          answer_summary: '4',
+          solution_markdown: '**2+2** = **4**',
+          verification: {
+            sympy_passed: true,
+            scipy_passed: true,
+            wolfram_used: false,
+            wolfram_passed: false,
+            cheap_verifier_used: false,
+            cheap_verifier_passed: false,
+            checks: ['2+2 = 4']
+          },
+          warnings: []
+        };
+      }
+    };
+  };
+
+  try {
+    const response = await handler(postEvent('2+2'));
+    const body = JSON.parse(response.body);
+
+    assert.equal(response.statusCode, 200);
+    assert.equal(body.ok, true);
+    assert.equal(body.status, 'LOCAL_VERIFIED');
+    assert.equal(body.verified, true);
+    assert.equal(body.answer_summary, '4');
+  } finally {
+    global.fetch = originalFetch;
+    if (originalSolverUrl) {
+      process.env.SOLVER_URL = originalSolverUrl;
+    } else {
+      delete process.env.SOLVER_URL;
+    }
+  }
 });
 
-test('supportedWordProblemSolver solves the splice tray pattern', function() {
-  const result = solveProblem(
-    'A fiber crew installs the same number of splice trays in 7 cabinets. Each cabinet gets 18 trays. Later, 9 trays are removed because they are damaged. The remaining trays are split evenly between 3 service zones. How many trays does each zone get?'
-  );
+test('converts solver fetch failures to compute-overloaded', async function() {
+  const originalSolverUrl = process.env.SOLVER_URL;
+  const originalFetch = global.fetch;
 
-  assert.equal(result.status, 'solved');
-  assert.equal(result.solver, 'supportedWordProblemSolver');
-  assert.equal(result.expression, '(7 * 18 - 9) / 3');
-  assert.equal(result.answer, '39');
-});
+  process.env.SOLVER_URL = 'https://solver.example.test';
+  global.fetch = async function() {
+    throw new Error('network down');
+  };
 
-test('unsupportedAdvancedProblemGate rejects wastewater pond optimization', function() {
-  const result = solveProblem(
-    'A wastewater treatment plant needs a rectangular holding pond with a fixed volume. The liner cost differs for the bottom and sides. Express total cost as a function of one variable, minimize the cost subject to the volume constraint, use the derivative and second derivative, and report the optimal width, length, depth, and exact form.'
-  );
+  try {
+    const response = await handler(postEvent('advanced problem'));
+    const body = JSON.parse(response.body);
 
-  assertVerifiedSolverRejection(result);
-});
-
-test('unsupportedAdvancedProblemGate rejects paraboloid tank optimization', function() {
-  const result = solveProblem(
-    'A chemical processing plant needs to construct a custom storage tank for a highly corrosive liquid. The tank consists of a right circular cylinder of radius r and height h, topped with a paraboloid of revolution generated by rotating y = kx^2 about the y-axis, where the paraboloid has height d and base radius r. The total volume of the tank must be exactly 18,000 liters. The paraboloid cap must match the cylinder radius at the joint. Express the total cost C as a function of one variable, find the values of r, h, and d that minimize total construction cost, compute the minimum cost in exact form, verify the critical point with the second derivative test, derive the surface area of the paraboloid of revolution, justify a global minimum, and discuss calculus and economic interpretation.'
-  );
-
-  assertVerifiedSolverRejection(result);
+    assert.equal(response.statusCode, 200);
+    assert.equal(body.ok, false);
+    assert.equal(body.status, 'COMPUTE_OVERLOADED');
+    assert.equal(body.answer_summary, OVERLOADED);
+    assert.match(body.warnings.join(' '), /network down/);
+  } finally {
+    global.fetch = originalFetch;
+    if (originalSolverUrl) {
+      process.env.SOLVER_URL = originalSolverUrl;
+    } else {
+      delete process.env.SOLVER_URL;
+    }
+  }
 });

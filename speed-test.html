@@ -958,7 +958,50 @@
     /* ══════════════════════════════════
        RELAY SERVER SOLVER
     ══════════════════════════════════ */
-    var verifiedSolverMessage = 'Relay can solve arithmetic and supported formulas directly. This advanced problem needs a verified solver.';
+    var overloadedMessage = 'Relay is overloaded with computing right now. Please try again later.';
+
+    function normalizeSolverResponse(problem, d) {
+      if (d.error) {
+        return {
+          status: 'rejected',
+          title: 'Solver error',
+          message: d.error,
+          answer: d.error,
+          steps: ['Solver error', d.error]
+        };
+      }
+
+      var isVerified = d.verified === true || d.status === 'solved';
+      var answer = d.answer_summary || d.answer || (isVerified ? 'Verified' : overloadedMessage);
+
+      if (!isVerified || d.ok === false || d.status === 'COMPUTE_OVERLOADED' || d.status === 'SOLVER_UNAVAILABLE') {
+        return {
+          status: 'rejected',
+          title: d.status === 'COMPUTE_OVERLOADED' ? 'Computation unavailable' : 'Unsupported advanced problem',
+          message: answer,
+          answer: answer,
+          backendStatus: d.status || '',
+          solver: d.method || d.solver || '',
+          verified: false,
+          warnings: Array.isArray(d.warnings) ? d.warnings : []
+        };
+      }
+
+      return {
+        status: 'solved',
+        solver: d.method || d.solver || '',
+        backendStatus: d.status || '',
+        classification: d.classification || '',
+        verified: true,
+        problem: d.problem || problem,
+        expression: d.expression || '',
+        solutionMarkdown: d.solution_markdown || '',
+        verification: d.verification || null,
+        warnings: Array.isArray(d.warnings) ? d.warnings : [],
+        steps: Array.isArray(d.steps) ? d.steps : [],
+        answer: answer
+      };
+    }
 
     function solveWordProblem(problem) {
       return fetch('/.netlify/functions/solve', {
@@ -968,34 +1011,15 @@
       })
       .then(function(r) { return r.json(); })
       .then(function(d) {
-        if (d.error) {
-          return {
-            status: 'rejected',
-            title: 'Unsupported advanced problem',
-            message: d.error,
-            answer: d.error,
-            steps: ['Unsupported advanced problem', d.error]
-          };
-        }
-
-        return {
-          status: d.status || 'rejected',
-          solver: d.solver || '',
-          title: d.title || '',
-          problem: d.problem || problem,
-          expression: d.expression || '',
-          message: d.message || '',
-          steps: Array.isArray(d.steps) ? d.steps : [],
-          answer: d.answer || 'Error'
-        };
+        return normalizeSolverResponse(problem, d);
       })
       .catch(function() {
         return {
           status: 'rejected',
-          title: 'Unsupported advanced problem',
-          message: verifiedSolverMessage,
-          answer: verifiedSolverMessage,
-          steps: ['Unsupported advanced problem', verifiedSolverMessage]
+          title: 'Computation unavailable',
+          message: overloadedMessage,
+          answer: overloadedMessage,
+          steps: ['Computation unavailable', overloadedMessage]
         };
       });
     }
@@ -1034,23 +1058,53 @@
 
     function sleep(ms) { return new Promise(function(r){ setTimeout(r, ms); }); }
 
+    function markdownToResponseLines(markdown) {
+      if (!markdown) return [];
+
+      return markdown
+        .split(/\r?\n/)
+        .map(function(line) {
+          return line
+            .trim()
+            .replace(/^#{1,6}\s*/, '')
+            .replace(/\*\*/g, '')
+            .replace(/^[-*]\s+/, '')
+            .replace(/`/g, '');
+        })
+        .filter(Boolean);
+    }
+
     function buildResponseLines(originalProblem, solveResult) {
       var answer = solveResult.answer || 'Error';
 
       if (solveResult.status === 'rejected') {
-        return [
+        var rejectedLines = [
           solveResult.title || 'Unsupported advanced problem',
           solveResult.message || answer
         ];
+        (solveResult.warnings || []).forEach(function(warning) {
+          rejectedLines.push('Warning: ' + warning);
+        });
+        return rejectedLines;
       }
 
       var lines = ['Problem: ' + (solveResult.problem || originalProblem)];
+      if (solveResult.backendStatus || solveResult.solver) {
+        lines.push('Verified: ' + (solveResult.backendStatus || 'verified') + (solveResult.solver ? ' via ' + solveResult.solver : ''));
+      }
       if (solveResult.expression) {
         var expressionLabel = solveResult.solver === 'supportedWordProblemSolver'
           ? 'Extracted expression'
           : 'Expression';
         lines.push(expressionLabel + ': ' + solveResult.expression);
       }
+
+      markdownToResponseLines(solveResult.solutionMarkdown).forEach(function(line) {
+        lines.push(line);
+      });
+      (solveResult.steps || []).forEach(function(line) {
+        lines.push(line);
+      });
       lines.push('Answer: ' + answer);
       return lines;
     }
@@ -1225,7 +1279,7 @@
         });
         var label = isRejected
           ? (solveResult.title || 'Unsupported advanced problem')
-          : truncateLabel(solveResult.expression || expr, 48);
+          : truncateLabel(solveResult.expression || solveResult.backendStatus || expr, 48);
         answerEq.textContent  = label;
         answerVal.textContent = isRejected ? (solveResult.message || answer) : answer;
         var answerFinal = document.getElementById('answerFinal');
@@ -1234,7 +1288,7 @@
           answerFinal.style.display = 'flex';
         }
         answerCard.classList.add('show');
-        showBubble(isRejected ? 'Needs verified solver' : '✅ ' + answer);
+        showBubble(isRejected ? 'Compute unavailable' : '✅ ' + answer);
         setStatus('Test complete!', true);
         return sleep(1900);
       })

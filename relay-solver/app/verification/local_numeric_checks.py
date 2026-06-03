@@ -11,7 +11,9 @@ No external API calls.
 """
 
 import math
+import re
 from typing import Optional
+import sympy as sp
 from app.models import VerificationDetail
 
 
@@ -53,20 +55,90 @@ def _verify_cylinder_hemisphere(raw: dict, V_target: float) -> tuple[bool, list[
 
 # ── Generic constraint checker ────────────────────────────────────────────────
 
-def verify_constraint_checks(constraint_checks: list[str], raw: dict) -> tuple[bool, list[str]]:
+def _normalize_expression(expr: str) -> str:
+    return (
+        expr.replace("π", "pi")
+        .replace("−", "-")
+        .replace("×", "*")
+        .replace("÷", "/")
+        .replace("·", "*")
+        .replace("^", "**")
+        .replace("²", "**2")
+        .replace("³", "**3")
+        .replace(",", "")
+        .strip()
+    )
+
+
+def _safe_eval_expression(expr: str, raw: dict) -> float:
+    expr = _normalize_expression(expr)
+    if not expr:
+        raise ValueError("Empty expression")
+    if "__" in expr or re.search(r"[^A-Za-z0-9_+\-*/().,\s]", expr):
+        raise ValueError(f"Unsupported characters in expression: {expr}")
+
+    locals_map = {
+        "pi": sp.pi,
+        "sqrt": sp.sqrt,
+        "abs": abs,
+    }
+    for key, value in raw.items():
+        if re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", str(key)):
+            try:
+                locals_map[str(key)] = float(value)
+            except (TypeError, ValueError):
+                pass
+
+    value = sp.sympify(expr, locals=locals_map)
+    numeric = float(value.evalf())
+    if not math.isfinite(numeric):
+        raise ValueError(f"Expression was not finite: {expr}")
+    return numeric
+
+
+def _verify_equation(check: str, raw: dict) -> tuple[bool, str]:
+    if "=" not in check:
+        return False, f"Invalid check (missing '='): {check}"
+
+    left, right = check.split("=", 1)
+    try:
+      left_value = _safe_eval_expression(left, raw)
+      right_value = _safe_eval_expression(right, raw)
+    except Exception as exc:
+      return False, f"Invalid check ({exc}): {check}"
+
+    ok = _rel_close(left_value, right_value)
+    return ok, (
+        f"Equation check: {left.strip()} = {left_value:.6g}, "
+        f"{right.strip()} = {right_value:.6g} — {'✓' if ok else '✗'}"
+    )
+
+
+def verify_constraint_checks(
+    constraint_checks: list[str],
+    raw: dict,
+    require_equations: bool = False,
+) -> tuple[bool, list[str]]:
     """
     Parse and re-evaluate simple 'expr=value' constraint strings.
     Returns (all_passed, list_of_check_strings).
     """
     results = []
     all_ok = True
+    checked_count = 0
 
     for check in constraint_checks:
-        results.append(f"Check: {check}")
-        # We don't parse arbitrary expressions here — just report them.
-        # Deep verification is done by template-specific functions above.
+        ok, detail = _verify_equation(check, raw)
+        results.append(detail)
+        all_ok = all_ok and ok
+        if ok:
+            checked_count += 1
 
-    return True, results  # Structural check — assume OK if we have checks
+    if require_equations and checked_count == 0:
+        results.append("Verification fail: no machine-checkable equations were validated")
+        return False, results
+
+    return all_ok, results
 
 
 # ── Domain checks ─────────────────────────────────────────────────────────────
@@ -101,6 +173,7 @@ def verify_locally(
     raw_values: dict,
     constraint_checks: list[str],
     problem_hint: str = "",
+    require_equations: bool = False,
 ) -> tuple[bool, VerificationDetail, list[str]]:
     """
     Run all applicable local numeric checks.
@@ -112,7 +185,11 @@ def verify_locally(
     domain_ok, domain_checks = check_domain(raw_values)
     all_checks.extend(domain_checks)
 
-    structure_ok, structure_checks = verify_constraint_checks(constraint_checks, raw_values)
+    structure_ok, structure_checks = verify_constraint_checks(
+        constraint_checks,
+        raw_values,
+        require_equations=require_equations,
+    )
     all_checks.extend(structure_checks)
 
     # Template-specific checks

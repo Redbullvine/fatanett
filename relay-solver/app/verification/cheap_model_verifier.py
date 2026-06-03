@@ -70,12 +70,21 @@ async def verify(
         resp.raise_for_status()
         data = resp.json()
     except Exception:
-        # Verifier unavailable — treat as inconclusive (don't block)
-        return {"used": True, "passed": True, "reason": "verifier_unavailable", "errors": []}
+        return {
+            "used": True,
+            "passed": False,
+            "reason": "verifier_unavailable",
+            "errors": ["Verifier unavailable; premium answer was not independently checked."],
+        }
 
     block = next((b for b in data.get("content", []) if b["type"] == "text"), None)
     if not block:
-        return {"used": True, "passed": True, "reason": "empty_response", "errors": []}
+        return {
+            "used": True,
+            "passed": False,
+            "reason": "empty_response",
+            "errors": ["Verifier returned an empty response."],
+        }
 
     raw = block["text"].strip()
     try:
@@ -87,9 +96,10 @@ async def verify(
         except Exception:
             parsed = {}
 
+    passed = parsed.get("passed")
     return {
         "used": True,
-        "passed": bool(parsed.get("passed", True)),
+        "passed": passed is True,
         "reason": parsed.get("reason", ""),
-        "errors": parsed.get("detected_errors", []),
+        "errors": parsed.get("detected_errors", []) if passed is True else parsed.get("detected_errors", ["Verifier did not return an explicit pass."]),
     }

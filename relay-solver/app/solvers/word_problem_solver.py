@@ -119,7 +119,7 @@ _PORT_RE = re.compile(
     .*?
     (\d+)\s*(?:replacement\s+)?port                  # group 6: delivered
     .*?
-    (\d+)\s*(?:held|spare|emergency)                 # group 7: held back
+    (\d+)\D{0,40}(?:held|spare|emergency)            # group 7: held back
     .*?
     (\d+)\s*(?:service\s*)?zone                      # group 8: zones
     """,

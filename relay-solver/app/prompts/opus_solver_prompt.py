@@ -47,6 +47,9 @@ VERIFICATION_EQUATIONS:
 
 Replace <value> with bare numbers (no units, no dollar signs, no commas).
 Replace <equation> with the left-hand side expression and =value on the right.
+Machine-checkable equations may use only bare numbers, pi, arithmetic operators,
+and variable names listed in FINAL_VALUES. Include at least one constraint
+equation and one objective/critical-point verification equation.
 Do not put anything after the VERIFICATION_EQUATIONS block.
 """
 

@@ -1,6 +1,14 @@
 # Local Netlify folder
 .netlify
 
+# Local Python environments / secrets
+.venv/
+relay-solver/.venv/
+.env
+relay-solver/.env
+__pycache__/
+*.py[cod]
+
 # Business documents (not web assets)
 SPEC_COM_LLC/
 Spec_Com_TDS_001.xlsx

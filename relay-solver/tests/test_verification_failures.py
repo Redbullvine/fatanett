@@ -31,6 +31,24 @@ def test_valid_values_pass():
     assert passed
 
 
+def test_required_machine_checks_missing_fails():
+    raw = {"r": 2.0, "h": 3.0, "objective": 10.0}
+    passed, detail, checks = verify_locally(raw, [], "", require_equations=True)
+    assert not passed
+
+
+def test_machine_equation_mismatch_fails():
+    raw = {"r": 2.0}
+    passed, detail, checks = verify_locally(raw, ["r + 1 = 4"], "", require_equations=True)
+    assert not passed
+
+
+def test_machine_equation_match_passes():
+    raw = {"r": 2.0}
+    passed, detail, checks = verify_locally(raw, ["r + 1 = 3"], "", require_equations=True)
+    assert passed
+
+
 # ── Overloaded message ────────────────────────────────────────────────────────
 
 def test_overloaded_message_text():
