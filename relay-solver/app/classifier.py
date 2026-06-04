@@ -24,6 +24,8 @@ _EXPERT = [
     r"\b(eigenvalue|eigenvector|diagonaliz)\b",
     r"\b(surface\s+of\s+revolution)\b",
     r"\b(proof|show\s+that|prove\s+that)\b",
+    r"\bfind\s+all\s+positive\s+integers\b",
+    r"\binfinitely\s+many\b",
     r"\b(taylor\s+series|maclaurin|power\s+series|radius\s+of\s+convergence)\b",
     r"\b(central\s+limit|moment\s+generating|characteristic\s+function)\b",
     r"\b(stokes|green.s\s+theorem|divergence\s+theorem)\b",
@@ -70,6 +72,20 @@ _WORD_PROBLEM_SIGNALS = [
     r"\b(removed|added|damaged|replaced|spare|leftover)\b",
 ]
 
+_UNSUPPORTED_PROOF_PATTERNS = [
+    r"\b(prove|proof|show\s+that|justify\s+that)\b",
+    r"\binfinitely\s+many\b",
+    r"\bfind\s+all\s+positive\s+integers\b",
+    r"\ball\s+positive\s+integers\b.{0,80}\b(divides?|divisible|such\s+that)\b",
+]
+
+_MULTI_PROMPT_PATTERNS = [
+    r"\balternatively\b",
+    r"\bharder\s+computational\s+version\b",
+    r"\bcomputational\s+version\b",
+    r"\b(or,\s*if\s+you\s+want|if\s+you\s+want\s+something)\b",
+]
+
 
 def classify_problem(problem: str) -> Classification:
     """
@@ -105,3 +121,23 @@ def classify_problem(problem: str) -> Classification:
         return Classification.MEDIUM
 
     return Classification.SIMPLE
+
+
+def unsupported_for_verified_numeric_solver(problem: str) -> list[str]:
+    """
+    Return reasons this prompt must not go through the numeric premium verifier.
+
+    Relay can verify arithmetic, structured word templates, and deterministic
+    optimization templates. It cannot yet verify proof validity, exhaustive
+    number-theory claims, or prompts that ask it to choose among alternatives.
+    """
+    t = problem.lower()
+    reasons: list[str] = []
+
+    if any(re.search(pat, t, re.IGNORECASE) for pat in _MULTI_PROMPT_PATTERNS):
+        reasons.append("Prompt contains multiple alternative problems.")
+
+    if any(re.search(pat, t, re.IGNORECASE) for pat in _UNSUPPORTED_PROOF_PATTERNS):
+        reasons.append("Proof or exhaustive integer-search prompt requires a proof verifier.")
+
+    return reasons

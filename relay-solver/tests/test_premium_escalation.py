@@ -1,8 +1,10 @@
 """Tests for premium escalation rules — no Opus for cheap problems."""
 
 import pytest
-from app.classifier import classify_problem
-from app.models import Classification
+import asyncio
+from app.classifier import classify_problem, unsupported_for_verified_numeric_solver
+from app.main import solve as solve_endpoint
+from app.models import Classification, SolveRequest, SolverStatus
 from app.solvers import arithmetic_solver, word_problem_solver, template_solver
 
 
@@ -37,6 +39,51 @@ def test_de_classified_expert():
 
 def test_multivariable_classified_expert():
     assert classify_problem("Find the gradient of f(x,y) = x^2 + y^2") == Classification.EXPERT
+
+def test_proof_prompt_is_unsupported_for_numeric_verifier():
+    reasons = unsupported_for_verified_numeric_solver(
+        "Let p be an odd prime. Prove that there are infinitely many positive integers n "
+        "such that p divides n^(2^(p-1)) - 2."
+    )
+    assert reasons
+
+def test_multi_problem_prompt_is_unsupported_for_numeric_verifier():
+    reasons = unsupported_for_verified_numeric_solver(
+        "Prove the theorem. Alternatively, find all positive integers n such that f(n) divides n^2025 - 1."
+    )
+    assert len(reasons) >= 2
+
+def test_relay_rejects_combined_proof_and_computational_prompt():
+    problem = (
+        "Let $ p $ be an odd prime. Prove that there are infinitely many positive integers $ n $ such that "
+        "$ p $ divides $ n^{2^{p-1}} - 2 $, but $ p $ does not divide $ n^{2^k} - 2 $ for any $ k < p-1 $. "
+        "(Alternatively, if you want something more computational that still requires serious reasoning:) "
+        "Harder computational version: Find all positive integers n such that "
+        "n^5 + n^4 + n^3 + n^2 + n + 1 divides n^2025 - 1."
+    )
+
+    response = asyncio.run(solve_endpoint(SolveRequest(problem=problem)))
+
+    assert response.ok is True
+    assert response.verified is True
+    assert response.status == SolverStatus.COUNTEREXAMPLE_FOUND
+    assert response.method == "bundled_counterexample_check"
+    assert "The statement is false as written" in response.answer_summary
+    assert "p = 3" in response.solution_markdown
+    assert response.status != SolverStatus.VERIFIED_PREMIUM
+
+def test_exhaustive_integer_search_without_deterministic_solver_is_unsupported():
+    problem = (
+        "Find all positive integers n such that "
+        "n^5 + n^4 + n^3 + n^2 + n + 1 divides n^2025 - 1."
+    )
+
+    response = asyncio.run(solve_endpoint(SolveRequest(problem=problem)))
+
+    assert response.ok is False
+    assert response.verified is False
+    assert response.status == SolverStatus.UNSUPPORTED_PROOF_VERIFICATION
+    assert "overloaded" in response.answer_summary.lower()
 
 
 # ── Solver routing: simple/medium never needs Opus ────────────────────────────

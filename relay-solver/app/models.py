@@ -22,6 +22,8 @@ class SolverStatus(str, Enum):
     LOCAL_VERIFIED          = "LOCAL_VERIFIED"           # deterministic, no premium
     LOCAL_SYMBOLIC_VERIFIED = "LOCAL_SYMBOLIC_VERIFIED"  # SymPy/SciPy verified
     VERIFIED_PREMIUM        = "VERIFIED_PREMIUM"         # Opus + verification passed
+    COUNTEREXAMPLE_FOUND    = "COUNTEREXAMPLE_FOUND"     # deterministic disproof
+    UNSUPPORTED_PROOF_VERIFICATION = "UNSUPPORTED_PROOF_VERIFICATION"
     COMPUTE_OVERLOADED      = "COMPUTE_OVERLOADED"       # verification failed / cap hit
     SOLVER_UNAVAILABLE      = "SOLVER_UNAVAILABLE"       # service down
 

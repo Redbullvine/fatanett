@@ -974,12 +974,26 @@
       var isVerified = d.verified === true || d.status === 'solved';
       var answer = d.answer_summary || d.answer || (isVerified ? 'Verified' : overloadedMessage);
 
-      if (!isVerified || d.ok === false || d.status === 'COMPUTE_OVERLOADED' || d.status === 'SOLVER_UNAVAILABLE') {
+      if (d.status === 'COUNTEREXAMPLE_FOUND') {
         return {
           status: 'rejected',
-          title: d.status === 'COMPUTE_OVERLOADED' ? 'Computation unavailable' : 'Unsupported advanced problem',
+          title: 'Counterexample found',
           message: answer,
           answer: answer,
+          backendStatus: d.status || '',
+          solver: d.method || d.solver || '',
+          verified: d.verified === true,
+          warnings: Array.isArray(d.warnings) ? d.warnings : [],
+          solutionMarkdown: d.solution_markdown || ''
+        };
+      }
+
+      if (!isVerified || d.ok === false || d.status === 'COMPUTE_OVERLOADED' || d.status === 'SOLVER_UNAVAILABLE' || d.status === 'UNSUPPORTED_PROOF_VERIFICATION') {
+        return {
+          status: 'rejected',
+          title: 'Computation unavailable',
+          message: overloadedMessage,
+          answer: overloadedMessage,
           backendStatus: d.status || '',
           solver: d.method || d.solver || '',
           verified: false,
@@ -1082,6 +1096,9 @@
           solveResult.title || 'Unsupported advanced problem',
           solveResult.message || answer
         ];
+        markdownToResponseLines(solveResult.solutionMarkdown).forEach(function(line) {
+          rejectedLines.push(line);
+        });
         (solveResult.warnings || []).forEach(function(warning) {
           rejectedLines.push('Warning: ' + warning);
         });

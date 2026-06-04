@@ -28,7 +28,7 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
 from app import cache, rate_limit
-from app.classifier import classify_problem
+from app.classifier import classify_problem, unsupported_for_verified_numeric_solver
 from app.models import (
     Classification,
     NetworkStats,
@@ -38,6 +38,11 @@ from app.models import (
     SolverStatus,
     VerificationDetail,
     OVERLOADED_MESSAGE,
+)
+from app.proof_tasks import (
+    Counterexample,
+    find_odd_prime_statement_counterexample,
+    split_subproblems,
 )
 from app.solvers import (
     arithmetic_solver,
@@ -102,6 +107,117 @@ def _overloaded_response(classification: str, warnings: list[str] | None = None)
     )
 
 
+def _unsupported_proof_response(classification: str, warnings: list[str] | None = None) -> SolveResponse:
+    return SolveResponse(
+        ok=False,
+        classification=classification,
+        status=SolverStatus.UNSUPPORTED_PROOF_VERIFICATION,
+        verified=False,
+        method="proof_verification_unavailable",
+        answer_summary=OVERLOADED_MESSAGE,
+        solution_markdown=OVERLOADED_MESSAGE,
+        verification=VerificationDetail(),
+        warnings=(warnings or []) + ["Proof verification is unsupported or inconclusive."],
+        network_stats=None,
+    )
+
+
+def _counterexample_response(
+    classification: str,
+    counterexample: Counterexample,
+    network_stats: dict | None = None,
+) -> SolveResponse:
+    return SolveResponse(
+        ok=True,
+        classification=classification,
+        status=SolverStatus.COUNTEREXAMPLE_FOUND,
+        verified=True,
+        method="deterministic_counterexample",
+        answer_summary=counterexample.summary,
+        solution_markdown=f"{counterexample.summary}\n\n{counterexample.detail}",
+        verification=VerificationDetail(
+            sympy_passed=True,
+            scipy_passed=True,
+            checks=[counterexample.detail],
+        ),
+        warnings=[],
+        network_stats=network_stats,
+    )
+
+
+def _bundle_response(
+    classification: str,
+    subproblems: list[str],
+    results: list[SolveResponse],
+    network_stats: dict | None = None,
+) -> SolveResponse:
+    lines = ["Bundled prompt split into subproblems:"]
+    for idx, (subproblem, result) in enumerate(zip(subproblems, results), start=1):
+        lines.extend([
+            "",
+            f"Subproblem {idx}: {subproblem}",
+            f"Status: {result.status}",
+            f"Verified: {result.verified}",
+            result.solution_markdown,
+        ])
+
+    counterexample = next(
+        (result for result in results if result.status == SolverStatus.COUNTEREXAMPLE_FOUND),
+        None,
+    )
+    if counterexample:
+        return SolveResponse(
+            ok=True,
+            classification=classification,
+            status=SolverStatus.COUNTEREXAMPLE_FOUND,
+            verified=True,
+            method="bundled_counterexample_check",
+            answer_summary=counterexample.answer_summary,
+            solution_markdown="\n".join(lines),
+            verification=counterexample.verification,
+            warnings=["At least one bundled subproblem is false as written."],
+            network_stats=network_stats,
+        )
+
+    if any(not result.verified for result in results):
+        return SolveResponse(
+            ok=False,
+            classification=classification,
+            status=SolverStatus.UNSUPPORTED_PROOF_VERIFICATION,
+            verified=False,
+            method="bundled_partial_verification",
+            answer_summary=OVERLOADED_MESSAGE,
+            solution_markdown=OVERLOADED_MESSAGE,
+            verification=VerificationDetail(
+                checks=[f"Subproblem {idx}: {result.status}" for idx, result in enumerate(results, start=1)]
+            ),
+            warnings=["At least one bundled subproblem was unsupported or unverified."],
+            network_stats=network_stats,
+        )
+
+    status = (
+        SolverStatus.VERIFIED_PREMIUM
+        if all(result.status == SolverStatus.VERIFIED_PREMIUM for result in results)
+        else SolverStatus.LOCAL_VERIFIED
+    )
+    return SolveResponse(
+        ok=True,
+        classification=classification,
+        status=status,
+        verified=True,
+        method="bundled_verified",
+        answer_summary="; ".join(result.answer_summary for result in results),
+        solution_markdown="\n".join(lines),
+        verification=VerificationDetail(
+            sympy_passed=all(result.verification.sympy_passed for result in results),
+            scipy_passed=all(result.verification.scipy_passed for result in results),
+            checks=[f"Subproblem {idx}: {result.status}" for idx, result in enumerate(results, start=1)],
+        ),
+        warnings=[],
+        network_stats=network_stats,
+    )
+
+
 def _log_request(problem: str, classification: str, status: str, method: str, verified: bool) -> None:
     """Log only non-PII metadata."""
     problem_hash = hashlib.sha256(cache.normalize(problem).encode()).hexdigest()[:12]
@@ -130,6 +246,30 @@ async def solve(req: SolveRequest):
     problem       = req.problem
     network_stats = req.network_stats.model_dump() if req.network_stats else None
 
+    classification = classify_problem(problem)
+    cls_str = classification.value
+
+    subproblems = split_subproblems(problem)
+    if len(subproblems) > 1:
+        results = [
+            await solve(SolveRequest(problem=subproblem, network_stats=req.network_stats))
+            for subproblem in subproblems
+        ]
+        resp = _bundle_response(cls_str, subproblems, results, network_stats)
+        _log_request(problem, cls_str, resp.status, resp.method, resp.verified)
+        return resp
+
+    counterexample = find_odd_prime_statement_counterexample(problem)
+    if counterexample:
+        resp = _counterexample_response(cls_str, counterexample, network_stats)
+        _log_request(problem, cls_str, resp.status, resp.method, True)
+        return resp
+
+    unsupported_reasons = unsupported_for_verified_numeric_solver(problem)
+    if unsupported_reasons:
+        _log_request(problem, cls_str, "UNSUPPORTED_PROOF_VERIFICATION", "proof_verification_unavailable", False)
+        return _unsupported_proof_response(cls_str, unsupported_reasons)
+
     # ── 1. Cache lookup ───────────────────────────────────────────────────────
     cached = cache.get(problem)
     if cached:
@@ -137,10 +277,6 @@ async def solve(req: SolveRequest):
         cached["network_stats"] = network_stats
         log.info("cache hit for hash=%s", cache.cache_key(problem)[:12])
         return SolveResponse(**cached)
-
-    # ── 2. Classify ───────────────────────────────────────────────────────────
-    classification = classify_problem(problem)
-    cls_str = classification.value
 
     # ── 3. LANE 1A — Pure arithmetic ─────────────────────────────────────────
     arith = arithmetic_solver.solve(problem)
