@@ -874,6 +874,7 @@ body::before {
   grid-template-columns: repeat(2, 1fr);
   gap: 1.2rem;
 }
+.platform-side-grid .app-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .app-card-compact { box-shadow: none; }
 
 /* ── REASONS ── */
@@ -933,6 +934,64 @@ body::before {
   transition: color 0.2s, text-shadow 0.2s;
 }
 .text-link:hover { color: var(--accent-hi); text-shadow: var(--glow-sm); }
+
+/* ── APP DESIGN PAGE ── */
+.sub-hero {
+  padding: 9rem 0 4rem;
+  background:
+    radial-gradient(ellipse 45% 55% at 50% 0%, rgba(209,0,0,0.12), transparent),
+    rgba(0,0,0,0.34);
+}
+.sub-hero h1 {
+  max-width: 12ch;
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  line-height: 0.95;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  margin-bottom: 1.1rem;
+}
+.sub-hero p {
+  max-width: 46rem;
+  color: var(--muted-hi);
+  font-size: 1rem;
+}
+.section-light { background: var(--bg-alt); }
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+.app-grid .app-preview {
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #000;
+}
+.app-grid .preview-wide { aspect-ratio: 7 / 3; }
+.app-grid .app-card-body > p {
+  font-size: 0.9rem;
+  color: var(--muted-hi);
+  line-height: 1.6;
+}
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.55rem;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-accent);
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  transition: background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+.btn-outline:hover {
+  background: rgba(209,0,0,0.12);
+  box-shadow: var(--glow-sm);
+  color: #fff;
+}
 
 /* ── CONTACT ── */
 .contact-section {
@@ -1122,10 +1181,29 @@ body::before {
   font-family: var(--font);
 }
 .mock-screen { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+/* Live video previews inside the browser chrome */
+.app-mock-live { aspect-ratio: auto; }
+.app-mock-live .app-preview {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  display: block;
+  object-fit: contain;
+  background: #000;
+}
 .mock-tadaah    { background: #0e0818; }
 .mock-speccom   { background: #030c0a; }
+.mock-telecomstore { background: #07111d; }
+.mock-campdoodle { background: #11150c; }
+.mock-kselectric { background: #101009; }
 .mock-exitmap   { background: #07090f; }
+.mock-shoelace  { background: #0d0f12; }
+.mock-joveos    { background: #080b14; }
 .mock-candyapple { background: #0c0c12; }
+.mock-exitmap .app-preview { aspect-ratio: 4050 / 1722; }
+.mock-candyapple .app-preview { aspect-ratio: 4074 / 1780; }
+.mock-kselectric .app-preview,
+.mock-shoelace .app-preview { aspect-ratio: 7 / 3; }
 .mock-nav {
   display: flex;
   align-items: center;
@@ -1315,6 +1393,7 @@ body::before {
 @media (max-width: 1100px) {
   .package-grid { grid-template-columns: repeat(2, 1fr); }
   .package-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .app-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .platform-grid-dual { grid-template-columns: 1fr; }
   .contact-layout { grid-template-columns: 1fr; gap: 2rem; }
   .supporting-products { grid-template-columns: 1fr; }
@@ -1335,6 +1414,7 @@ body::before {
   .industry-grid { grid-template-columns: repeat(2, 1fr); }
   .package-grid { grid-template-columns: 1fr; }
   .package-grid-3 { grid-template-columns: 1fr; }
+  .app-grid { grid-template-columns: 1fr; }
   .featured-package { transform: none; }
   .platform-side-grid { grid-template-columns: 1fr; }
   .btn, .btn-block { width: 100%; }
