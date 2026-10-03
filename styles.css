@@ -1451,3 +1451,18 @@ body::before {
 @media (max-width: 480px) {
   .industry-grid { grid-template-columns: 1fr; }
 }
+
+/* ── HERO: text rides the skyline, monitors stay clear (desktop) ── */
+@media (min-width: 900px) {
+  .hero {
+    align-items: flex-start;
+    background: rgba(0,0,0,0.32);
+  }
+  .hero .container { padding-top: clamp(6.5rem, 14vh, 9rem); }
+  .hero-headline {
+    font-size: clamp(2.6rem, 4.8vw, 4.8rem);
+    max-width: 22ch;
+    margin-bottom: 1.1rem;
+  }
+  .hero-sub { margin-bottom: 1.6rem; font-size: clamp(0.95rem, 1.3vw, 1.1rem); }
+}
