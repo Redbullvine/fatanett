@@ -12,3 +12,7 @@ __pycache__/
 # Business documents (not web assets)
 SPEC_COM_LLC/
 Spec_Com_TDS_001.xlsx
+
+# Raw 4K screen recordings (source material; optimized versions live in assets/previews)
+previews/
+
