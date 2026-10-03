@@ -16,7 +16,12 @@
 
   <!-- Hero background loop (desktop only; poster fallback elsewhere) -->
   <div class="bg-video" id="bg-video" aria-hidden="true">
-    <video muted loop playsinline preload="metadata" poster="assets/previews/fatanett_bg_poster.jpg" aria-hidden="true" data-src="assets/previews/fatanett_bg_loop.mp4"></video>
+    <div class="bg-stage" id="bg-stage">
+      <video class="bg-main" muted loop playsinline preload="metadata" poster="assets/previews/fatanett_bg_poster.jpg" aria-hidden="true" data-src="assets/previews/fatanett_bg_loop.mp4"></video>
+      <!-- Monitor screens: one .bg-screen per monitor. Swap data-src / data-fit to change a preview. -->
+      <div class="bg-screen" data-side="left"  data-fit="center top"><video muted loop playsinline preload="none" data-src="assets/previews/hero_tadaah.mp4"></video></div>
+      <div class="bg-screen" data-side="right" data-fit="center bottom"><video muted loop playsinline preload="none" data-src="assets/previews/hero_telecomstore.mp4"></video></div>
+    </div>
   </div>
 
   <!-- Custom cursor -->
@@ -763,17 +768,79 @@
     }, { threshold: 0.25 });
     document.querySelectorAll('video.app-preview').forEach(function(v) { vidObs.observe(v); });
 
-    /* ── Background loop: desktop + motion allowed only ── */
+    /* ── Background scene: loop + previews on the side monitors (desktop, motion allowed) ── */
     (function() {
-      var v = document.querySelector('#bg-video video');
-      if (!v) return;
+      var layer = document.getElementById('bg-video');
+      var stage = document.getElementById('bg-stage');
+      var main  = stage && stage.querySelector('.bg-main');
+      if (!layer || !main) return;
       var ok = window.matchMedia('(min-width: 768px)').matches &&
                !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!ok) { v.remove(); return; }
-      v.addEventListener('error', function() { v.remove(); });
-      v.src = v.getAttribute('data-src');
-      v.muted = true;
-      v.play().catch(function(){});
+      if (!ok) { stage.remove(); return; }
+
+      var SW = 1280, SH = 960;          /* source video size */
+      var SCREEN_W = 640, SCREEN_H = 315;
+      /* monitor screen corners in source px: TL, TR, BR, BL */
+      var QUADS = {
+        left:  [[50,575],  [433,559],  [436,741], [55,777]],
+        right: [[900,561], [1292,580], [1292,768],[897,743]]
+      };
+
+      /* homography unit-rect (w x h) -> quad, as CSS matrix3d */
+      function matrix3d(w, h, q) {
+        var src = [[0,0],[w,0],[w,h],[0,h]], A = [], B = [], i, j, k;
+        for (i = 0; i < 4; i++) {
+          var x = src[i][0], y = src[i][1], X = q[i][0], Y = q[i][1];
+          A.push([x,y,1,0,0,0,-x*X,-y*X]); B.push(X);
+          A.push([0,0,0,x,y,1,-x*Y,-y*Y]); B.push(Y);
+        }
+        for (i = 0; i < 8; i++) {
+          var p = i;
+          for (j = i+1; j < 8; j++) if (Math.abs(A[j][i]) > Math.abs(A[p][i])) p = j;
+          var t = A[i]; A[i] = A[p]; A[p] = t; t = B[i]; B[i] = B[p]; B[p] = t;
+          for (j = i+1; j < 8; j++) {
+            var f = A[j][i] / A[i][i];
+            for (k = i; k < 8; k++) A[j][k] -= f * A[i][k];
+            B[j] -= f * B[i];
+          }
+        }
+        var m = [];
+        for (i = 7; i >= 0; i--) {
+          var sum = B[i];
+          for (j = i+1; j < 8; j++) sum -= A[i][j] * m[j];
+          m[i] = sum / A[i][i];
+        }
+        return 'matrix3d(' + [m[0],m[3],0,m[6], m[1],m[4],0,m[7], 0,0,1,0, m[2],m[5],0,1].join(',') + ')';
+      }
+
+      var screens = [].slice.call(stage.querySelectorAll('.bg-screen'));
+      screens.forEach(function(el) {
+        el.style.width = SCREEN_W + 'px';
+        el.style.height = SCREEN_H + 'px';
+        el.style.transform = matrix3d(SCREEN_W, SCREEN_H, QUADS[el.getAttribute('data-side')]);
+        el.firstElementChild.style.objectPosition = el.getAttribute('data-fit') || 'center';
+      });
+
+      /* cover the viewport, but keep the monitors' base near the bottom edge */
+      function layout() {
+        var vw = layer.clientWidth, vh = layer.clientHeight;
+        var s = Math.max(vw / SW, vh / SH);
+        var ty = Math.min(0, Math.max(vh - SH * s, vh - 800 * s));
+        var tx = (vw - SW * s) / 2;
+        stage.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + s + ')';
+        document.documentElement.style.setProperty('--monitor-top', Math.round(559 * s + ty) + 'px');
+      }
+      layout();
+      window.addEventListener('resize', layout);
+      stage.classList.add('on');
+
+      var vids = [main].concat(screens.map(function(el) { return el.firstElementChild; }));
+      vids.forEach(function(v) {
+        v.addEventListener('error', function() { if (v === main) { stage.remove(); } else { v.parentNode.remove(); } });
+        v.src = v.getAttribute('data-src');
+        v.muted = true;
+        v.play().catch(function(){});
+      });
     })();
 
     /* ── Footer year ── */
