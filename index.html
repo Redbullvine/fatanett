@@ -19,8 +19,8 @@
     <div class="bg-stage" id="bg-stage">
       <video class="bg-main" muted loop playsinline preload="metadata" poster="assets/previews/fatanett_bg_poster.jpg" aria-hidden="true" data-src="assets/previews/fatanett_bg_loop.mp4"></video>
       <!-- Monitor screens: one .bg-screen per monitor. Swap data-src / data-fit to change a preview. -->
-      <div class="bg-screen" data-side="left"  data-fit="center top"><video muted loop playsinline preload="none" data-src="assets/previews/hero_tadaah.mp4"></video></div>
-      <div class="bg-screen" data-side="right" data-fit="center bottom"><video muted loop playsinline preload="none" data-src="assets/previews/hero_telecomstore.mp4"></video></div>
+      <div class="bg-screen" data-side="left"  data-fit="center"><video muted loop playsinline preload="none" data-src="assets/previews/hero_tadaah.mp4"></video></div>
+      <div class="bg-screen" data-side="right" data-fit="center"><video muted loop playsinline preload="none" data-src="assets/previews/hero_telecomstore.mp4"></video></div>
     </div>
   </div>
 
@@ -779,7 +779,7 @@
       if (!ok) { stage.remove(); return; }
 
       var SW = 1280, SH = 960;          /* source video size */
-      var SCREEN_W = 640, SCREEN_H = 315;
+      var SCREEN_W = 640, SCREEN_H = 316;
       /* monitor screen corners in source px: TL, TR, BR, BL */
       var QUADS = {
         left:  [[50,575],  [433,559],  [436,741], [55,777]],
