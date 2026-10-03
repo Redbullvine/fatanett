@@ -813,6 +813,25 @@
         return 'matrix3d(' + [m[0],m[3],0,m[6], m[1],m[4],0,m[7], 0,0,1,0, m[2],m[5],0,1].join(',') + ')';
       }
 
+      /* silver bezels (Apple-display style) around all three monitors */
+      var CENTER = [[463,561],[872,560],[872,784],[463,785]];
+      var PAD = 7, CHIN = 15;
+      function dist(a, b) { return Math.hypot(a[0]-b[0], a[1]-b[1]); }
+      function addBezel(q) {
+        var e = [[q[0][0]-PAD, q[0][1]-PAD], [q[1][0]+PAD, q[1][1]-PAD],
+                 [q[2][0]+PAD, q[2][1]+CHIN], [q[3][0]-PAD, q[3][1]+CHIN]];
+        var w = Math.round((dist(e[0], e[1]) + dist(e[3], e[2])) / 2);
+        var hh = Math.round((dist(e[0], e[3]) + dist(e[1], e[2])) / 2);
+        var b = document.createElement('div');
+        b.className = 'bg-bezel';
+        b.style.width = w + 'px';
+        b.style.height = hh + 'px';
+        b.style.borderWidth = PAD + 'px ' + PAD + 'px ' + CHIN + 'px';
+        b.style.transform = matrix3d(w, hh, e);
+        stage.insertBefore(b, stage.querySelector('.bg-screen'));
+      }
+      addBezel(QUADS.left); addBezel(CENTER); addBezel(QUADS.right);
+
       var screens = [].slice.call(stage.querySelectorAll('.bg-screen'));
       screens.forEach(function(el) {
         el.style.width = SCREEN_W + 'px';

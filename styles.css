@@ -77,6 +77,17 @@ body.video-bg-page { background-image: none; }
   object-fit: fill;
   pointer-events: none;
 }
+.bg-bezel {
+  position: absolute;
+  top: 0; left: 0;
+  transform-origin: 0 0;
+  box-sizing: border-box;
+  border-style: solid;
+  border-image: linear-gradient(160deg, #c9ccd1 0%, #9b9fa5 40%, #7f838a 65%, #b3b6bb 100%) 1;
+  box-shadow: inset 0 0 0 2px #0b0b0c;
+  filter: brightness(0.95);
+  pointer-events: none;
+}
 .bg-screen {
   position: absolute;
   top: 0; left: 0;
