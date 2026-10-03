@@ -12,7 +12,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="video-bg-page">
+
+  <!-- Hero background loop (desktop only; poster fallback elsewhere) -->
+  <div class="bg-video" id="bg-video" aria-hidden="true">
+    <video muted loop playsinline preload="metadata" poster="assets/previews/fatanett_bg_poster.jpg" aria-hidden="true" data-src="assets/previews/fatanett_bg_loop.mp4"></video>
+  </div>
 
   <!-- Custom cursor -->
   <div class="cursor" aria-hidden="true"></div>
@@ -757,6 +762,19 @@
       });
     }, { threshold: 0.25 });
     document.querySelectorAll('video.app-preview').forEach(function(v) { vidObs.observe(v); });
+
+    /* ── Background loop: desktop + motion allowed only ── */
+    (function() {
+      var v = document.querySelector('#bg-video video');
+      if (!v) return;
+      var ok = window.matchMedia('(min-width: 768px)').matches &&
+               !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!ok) { v.remove(); return; }
+      v.addEventListener('error', function() { v.remove(); });
+      v.src = v.getAttribute('data-src');
+      v.muted = true;
+      v.play().catch(function(){});
+    })();
 
     /* ── Footer year ── */
     document.getElementById('year').textContent = new Date().getFullYear();
