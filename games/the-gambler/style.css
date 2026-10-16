@@ -88,3 +88,18 @@ body .console .wager button{border:2px outset #b49454;background:#171510;color:#
 .antique-cabinet .console{border:4px double #c8a561;border-radius:0 0 12px 12px;padding:24px 12px 20px;background:linear-gradient(90deg,#080b10cc,transparent 40%,#0004),linear-gradient(var(--casino-raised),#101115);box-shadow:inset 0 0 0 3px #33291f,inset 0 0 24px #0008}
 .antique-cabinet .machine-bottom{margin-top:12px;border-radius:3px 3px 10px 10px;padding:6px 3px;border-bottom:4px double #a98a51}
 @media(max-width:600px){.antique-cabinet{margin-top:67px;padding:16px 18px 18px;border-radius:28px 28px 18px 18px}.antique-cabinet:before,.antique-cabinet:after{width:7px;top:38px;bottom:28px;background-size:6px auto}.antique-cabinet:before{left:5px}.antique-cabinet:after{right:5px}.cabinet-crown{width:150px;height:87px;top:-69px}.cabinet-crown b{font-size:9px;letter-spacing:1px}.antique-cabinet .machine-top{font-size:8px;padding:11px 5px}.antique-cabinet .reel-frame{padding:4px}.antique-cabinet .console{padding:20px 5px 12px;gap:5px}.antique-cabinet .console label{font-size:7px;letter-spacing:.6px}.antique-cabinet .console small{font-size:7px;letter-spacing:.4px}.antique-cabinet .console .meter strong{font-size:20px}.antique-cabinet .console .wager strong{font-size:18px}.antique-cabinet .console .wager>div{gap:3px}.antique-cabinet .console .wager button{width:23px;height:25px}.antique-cabinet .console .spin{font-size:21px;letter-spacing:2px}.antique-cabinet .machine-bottom button,.antique-cabinet .skip{font-size:7px}.antique-cabinet .machine-bottom button{padding:8px 3px}}
+
+/* Approved Luna Moon scatter: retain the entire original composition. */
+.symbol.scatter{background:radial-gradient(ellipse at 50% 35%,#6a2436,#250a12 85%);border-color:#c9a45d88;gap:0}
+.symbol.scatter .luna-art{position:absolute;inset:0 0 16px;width:100%;height:calc(100% - 16px);object-fit:contain;object-position:center;filter:drop-shadow(0 0 4px #e8b95633)}
+.luna-label{position:absolute;bottom:0;left:0;right:0;height:16px;display:grid;place-items:center;background:linear-gradient(#3b1120,#15090d);border-top:1px solid #c5a35c88;color:#ffe6ac;font:700 clamp(8px,.85vw,12px) Georgia,serif;letter-spacing:1.5px;text-shadow:0 1px 2px #000}
+.symbol.luna-unlocked{box-shadow:inset 0 0 0 2px #ffe4a1,inset 0 0 17px #efba5866;border-color:#ffe4a1}
+.symbol.luna-sparkling{animation:luna-gold-pulse .75s ease-in-out 2 alternate}
+.symbol.luna-sparkling:after{content:'✦';position:absolute;top:10%;left:12%;color:#fff0bd;font-size:15px;text-shadow:0 0 8px #ffd566,45px 35px 2px #f5cf79,12px 65px 3px #fff0bd;animation:luna-sparkle .8s ease-in-out 2;pointer-events:none}
+.luna-announcement{padding:14px 10px;background:linear-gradient(100deg,#230b13,#5b1b2a,#230b13);border:2px double #d9b568;text-align:center;color:#ffe3a3}
+.luna-announcement[hidden]{display:none}
+.luna-announcement strong{display:block;font:700 clamp(12px,1.4vw,19px)/1.5 Georgia,serif;letter-spacing:1px}
+.luna-announcement button{margin-top:7px;min-height:44px;font-size:11px}
+@keyframes luna-gold-pulse{to{box-shadow:inset 0 0 0 2px #fff1c3,inset 0 0 26px #efba58aa;filter:brightness(1.15)}}
+@keyframes luna-sparkle{0%,100%{opacity:.1;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.symbol.luna-sparkling{animation:none}.symbol.luna-sparkling:after{display:none}}
