@@ -103,3 +103,30 @@ body .console .wager button{border:2px outset #b49454;background:#171510;color:#
 @keyframes luna-gold-pulse{to{box-shadow:inset 0 0 0 2px #fff1c3,inset 0 0 26px #efba58aa;filter:brightness(1.15)}}
 @keyframes luna-sparkle{0%,100%{opacity:.1;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.symbol.luna-sparkling{animation:none}.symbol.luna-sparkling:after{display:none}}
+
+/* Bonus invitations illustrated with existing approved artwork. */
+#bonus{padding:22px;width:min(760px,94vw)}
+#bonus>h2{font-size:clamp(23px,4vw,34px);line-height:1.15;margin:10px 0 12px}
+#bonusContent>p{font-size:12px;line-height:1.5;margin:0 0 15px}
+.bonus-choices{gap:14px}
+body #bonus .bonus-art-choice{position:relative;isolation:isolate;overflow:hidden;min-height:290px;padding:0;border:4px double #dbbb73;border-radius:9px;background:#1e0d12;box-shadow:inset 0 0 0 2px #24110c,0 6px 16px #0007;text-align:left;color:#ffe8b3}
+.bonus-art-choice>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;z-index:-2}
+.bonus-art-choice:before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 15%,#17080d44 42%,#19080eeb 68%,#10070a)}
+.bonus-choice-copy{display:flex;flex-direction:column;justify-content:flex-end;min-height:290px;padding:18px 16px;font:700 clamp(21px,3vw,27px)/1.15 'Cinzel',Georgia,serif;text-shadow:0 2px 4px #000}
+.bonus-choices .bonus-choice-copy small{font:12px/1.45 'DM Sans',sans-serif;color:#f4e6cb;margin:9px 0 0;max-width:260px}
+body #bonus .bonus-art-choice:hover{filter:brightness(1.1);border-color:#ffe9b8}
+@media(max-width:600px){#bonus{padding:18px;max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 20px)}#bonus>.eyebrow{font-size:8px}#bonus>h2{font-size:23px;line-height:1.12;margin:8px 0}#bonusContent>p{font-size:11px;margin-bottom:10px}.bonus-choices{gap:10px}body #bonus .bonus-art-choice{min-height:150px}.bonus-choice-copy{min-height:150px;padding:13px 12px 13px 43%;font-size:21px}.bonus-art-choice>img{object-position:40% 25%}.bonus-art-choice:before{background:linear-gradient(90deg,transparent,#19080d77 28%,#19080ee6 48%,#10070af2)}.bonus-choices .bonus-choice-copy small{font-size:10px;margin-top:7px}}
+@media(max-width:600px){.bonus-art-choice>img{width:66%;object-position:50% 20%}.bonus-art-choice:before{background:linear-gradient(90deg,transparent 20%,#19080d55 38%,#19080ee6 62%,#10070af2)}}
+.portrait .lou{background-image:url("assets/lucky_lou_1.png");background-size:auto 112%;background-position:52% 0}
+/* The Gambler appears as the elusive opponent during major victories. */
+.victory-big .victory-art,.victory-mega .victory-art{background-image:url('assets/the_gambler_1.png');opacity:.2;mask-image:linear-gradient(90deg,#000,transparent 75%)}
+/* Ace-blue header controls and warm title-gold character lettering. */
+body header #sound,body header #themeToggle{background:linear-gradient(145deg,#174c9c,#0c2c67 65%,#081d48);color:#f3dfaf;border:1px solid #c9ae6b99;box-shadow:inset 0 1px 0 #8cb4ed33,0 2px 5px #0005}
+body header #sound:hover,body header #themeToggle:hover{background:linear-gradient(145deg,#225eae,#123b80);color:#fff0c9}
+.portrait h2{color:#ecd49e;text-shadow:0 1px 2px #0005}
+.portrait>span{color:#dcc394}
+body header #sound{position:relative;flex:0 0 44px;width:44px;height:44px;padding:10px;font-size:0}
+body header #sound:before{content:'';display:block;width:22px;height:22px;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 9h4l5-4v14l-5-4H3z'/%3E%3Cpath d='M16 8q5 4 0 8' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
+body header #sound[aria-pressed="false"]:after{content:'';position:absolute;left:10px;top:21px;width:25px;height:2px;transform:rotate(-48deg);background:#f3dfaf;box-shadow:0 0 0 2px #0c2c67}
+.portrait p{color:#ecd49e}
+.wordmark,.edition i{color:#ecd49e}

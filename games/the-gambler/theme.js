@@ -1,7 +1,7 @@
 // Presentation preference only; independent of the game session.
 const root = document.documentElement;
-let theme = 'burgundy';
-try { theme = localStorage.getItem('gambler-theme') === 'midnight' ? 'midnight' : 'burgundy'; } catch {}
+let theme = 'midnight';
+try { theme = localStorage.getItem('gambler-theme-v2') === 'burgundy' ? 'burgundy' : 'midnight'; } catch {}
 const button = document.createElement('button');
 button.id = 'themeToggle';
 button.type = 'button';
@@ -13,7 +13,7 @@ function render() {
 }
 button.addEventListener('click', () => {
   theme = theme === 'burgundy' ? 'midnight' : 'burgundy';
-  try { localStorage.setItem('gambler-theme', theme); } catch {}
+  try { localStorage.setItem('gambler-theme-v2', theme); } catch {}
   render();
 });
 render();
