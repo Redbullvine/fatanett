@@ -1,0 +1,251 @@
+{
+  "status": "PROPOSED_ONLY_NOT_APPROVED_NOT_ACTIVE",
+  "version": "math-95-v1",
+  "targetRtp": 0.95,
+  "calculatedRtp": 0.9499757056543949,
+  "roundedDisplayRtpPercent": 95,
+  "rows": 3,
+  "reels": 5,
+  "paylines": [
+    [
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    [
+      0,
+      1,
+      2,
+      1,
+      0
+    ],
+    [
+      2,
+      1,
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2
+    ],
+    [
+      2,
+      2,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      2,
+      2,
+      2,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      0
+    ]
+  ],
+  "wagers": [
+    10,
+    20,
+    50,
+    100
+  ],
+  "symbols": [
+    "A",
+    "K",
+    "Q",
+    "J",
+    "10",
+    "9",
+    "gambler",
+    "lou",
+    "heidi",
+    "wild",
+    "scatter"
+  ],
+  "weights": [
+    13,
+    13,
+    13,
+    13,
+    13,
+    13,
+    5,
+    5,
+    5,
+    4,
+    3
+  ],
+  "totalWeight": 100,
+  "paytable": {
+    "9": [
+      7,
+      20,
+      75
+    ],
+    "10": [
+      8,
+      25,
+      100
+    ],
+    "A": [
+      15,
+      60,
+      250
+    ],
+    "K": [
+      12,
+      45,
+      200
+    ],
+    "Q": [
+      10,
+      35,
+      150
+    ],
+    "J": [
+      8,
+      30,
+      125
+    ],
+    "gambler": [
+      50,
+      330,
+      1550
+    ],
+    "lou": [
+      40,
+      205,
+      1025
+    ],
+    "heidi": [
+      35,
+      155,
+      775
+    ],
+    "wild": [
+      105,
+      635,
+      3075
+    ]
+  },
+  "payoutBasis": "line wager = total wager / 10",
+  "scatter": {
+    "weight": 3,
+    "totalWeight": 100,
+    "requiredAnywhere": 3,
+    "paidSpinTriggerProbability": 0.009371425985290362,
+    "meanPaidSpinsPerTrigger": 106.70734652011619,
+    "separatePayout": 0,
+    "retriggerDuringFreeSpins": false
+  },
+  "showdown": {
+    "awards": [
+      5,
+      10,
+      20,
+      50,
+      100
+    ],
+    "integerAwardWeights": [
+      20000000000,
+      30000000000,
+      19030909675,
+      15000000000,
+      15969090325
+    ],
+    "totalAwardWeight": 100000000000,
+    "expectedAward": 31.27527226,
+    "awardBasis": "total triggering wager",
+    "minimum": 5
+  },
+  "heidi": {
+    "guaranteedAward": 5,
+    "guaranteedAwardRule": "Additive grant before all free spins, not a conditional top-up",
+    "freeSpins": 10,
+    "lineWinMultiplier": 4,
+    "expectedAward": 31.27527226,
+    "awardBasis": "total triggering wager",
+    "minimum": 5,
+    "retrigger": false
+  },
+  "maximumPayouts": {
+    "units": "multiples of total paid/triggering wager",
+    "baseSpin": 3075,
+    "triggeringSpinLineAward": 1611.5,
+    "triggeringSpinExample": [
+      [
+        "wild",
+        "wild",
+        "wild"
+      ],
+      [
+        "wild",
+        "wild",
+        "scatter"
+      ],
+      [
+        "wild",
+        "wild",
+        "wild"
+      ],
+      [
+        "wild",
+        "wild",
+        "scatter"
+      ],
+      [
+        "wild",
+        "wild",
+        "scatter"
+      ]
+    ],
+    "showdownFeature": 100,
+    "heidiFeature": 123005,
+    "paidSpinIncludingShowdown": 3075,
+    "paidSpinIncludingHeidi": 124616.5,
+    "payoutCap": null,
+    "maximumMethod": "Analytic all-wild free-spin bound plus exhaustive 455 three-scatter placements for triggering-spin line awards; no cap."
+  },
+  "assumptions": [
+    "Independent cell draws, same distribution across all cells and free spins.",
+    "Highest eligible payout per line; different lines add.",
+    "No extra scatter awards, retriggers, jackpots or caps.",
+    "All awarded free spins completed.",
+    "No changes to the active game."
+  ]
+}
