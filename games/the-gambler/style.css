@@ -130,3 +130,8 @@ body header #sound:before{content:'';display:block;width:22px;height:22px;backgr
 body header #sound[aria-pressed="false"]:after{content:'';position:absolute;left:10px;top:21px;width:25px;height:2px;transform:rotate(-48deg);background:#f3dfaf;box-shadow:0 0 0 2px #0c2c67}
 .portrait p{color:#ecd49e}
 .wordmark,.edition i{color:#ecd49e}
+/* Clear speaker silhouette, with a dedicated mute mark rather than a mask. */
+body header #sound{display:grid;place-items:center;padding:7px}
+body header #sound:before{width:28px;height:28px;mask:none;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f3dfaf' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9h4l5-4v14l-5-4H3z'/%3E%3Cpath d='M16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14'/%3E%3C/svg%3E") center/contain no-repeat}
+body header #sound[aria-pressed="false"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f3dfaf' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9h4l5-4v14l-5-4H3z'/%3E%3Cpath d='m16 9 6 6m0-6-6 6'/%3E%3C/svg%3E")}
+body header #sound[aria-pressed="false"]:after{display:none}
