@@ -35,3 +35,62 @@ body .antique-cabinet .console button:disabled{opacity:.65;filter:saturate(.5)}
 @media(prefers-reduced-motion:reduce){.console button{transition:none!important}}
 
 @media(max-width:380px){.antique-cabinet .console{grid-template-columns:repeat(2,minmax(0,1fr));padding:22px 9px;gap:20px 8px}.antique-cabinet .console .meter{grid-column:1;grid-row:1}.antique-cabinet .console .win-meter{grid-column:2;grid-row:1;display:block;padding:12px 0}.antique-cabinet .console .win-meter:before{display:block}.antique-cabinet .console .win-meter label{margin-bottom:10px}.antique-cabinet .console .win-meter small{display:block}.antique-cabinet .console #spin{grid-column:1/-1;grid-row:2;width:140px;height:140px;margin:6px 0 12px}.antique-cabinet .console .wager{grid-column:1/-1;grid-row:3}.antique-cabinet .console .wager>div{gap:16px}.antique-cabinet .console .counter-window{max-width:100%}.antique-cabinet .console label{font-size:8px;letter-spacing:.5px}}
+
+/* Phone portrait: size the cabinet to Safari's live content viewport. */
+@media(max-width:600px) and (orientation:portrait){
+  html{min-height:100%;background:var(--casino-bg)}
+  body{min-height:100dvh}
+  body>main{height:100dvh;min-height:0;padding:env(safe-area-inset-top,0px) max(8px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(8px,env(safe-area-inset-left,0px));display:grid;grid-template-rows:44px minmax(0,1fr) 16px;gap:3px}
+  main>header{height:44px;min-height:0;padding:0;gap:5px;flex-wrap:nowrap}
+  header .wordmark{font-size:20px;gap:0}header .wordmark span{display:none}
+  header #sound{min-height:44px;padding:5px 8px;font-size:10px}
+  header #themeToggle{min-height:44px;padding:5px 7px;font-size:9px;letter-spacing:0}
+  main>.title,main>.features{display:none}
+  main>.saloon{width:100%;max-width:100%;min-height:0;margin:30px 0 0;display:block}
+  .saloon>.antique-cabinet{height:100%;min-height:0;margin:0;padding:9px 14px 6px;display:grid;grid-template-rows:22px minmax(0,1fr) 24px auto 44px;gap:3px;border-radius:24px 24px 18px 18px}
+  .cabinet-crown{top:-31px;height:40px;width:138px;border-radius:35px 35px 4px 4px;gap:0}
+  .cabinet-crown span,.cabinet-crown i{display:none}.cabinet-crown b{font-size:10px;margin:0}
+  .antique-cabinet:before,.antique-cabinet:after{top:24px;bottom:18px}
+  .antique-cabinet .machine-top{padding:3px 5px;font-size:8px;border-width:2px;letter-spacing:.5px}
+  .antique-cabinet .reel-frame{min-height:0;margin:2px 0;padding:3px;outline-offset:1px}
+  .reel-frame .reels{height:100%;padding:2px;gap:2px;min-height:0}
+  .reel-frame .reel{min-height:0;grid-template-rows:repeat(3,minmax(0,1fr));gap:2px}
+  .reel-frame .symbol{height:100%;min-height:0}
+  .antique-cabinet .status{min-height:0;padding:3px 4px;font-size:10px;line-height:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .antique-cabinet .console{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:44px 112px 44px;gap:3px 8px;padding:5px 8px 7px;border-width:4px;border-radius:0 0 24px 24px}
+  .antique-cabinet .console:before,.antique-cabinet .console:after{top:5px;width:7px;height:7px}
+  .antique-cabinet .console .meter,.antique-cabinet .console .win-meter{grid-row:1;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+  .antique-cabinet .console .meter{grid-column:1}.antique-cabinet .console .win-meter{grid-column:2}
+  .antique-cabinet .console .meter:before,.antique-cabinet .console .meter small{display:none}
+  .antique-cabinet .console label,.antique-cabinet .console .win-meter label{font-size:9px;letter-spacing:.5px;margin:0;line-height:11px}
+  .antique-cabinet .counter-window{padding:2px 5px;min-height:30px;border-width:3px}
+  .console .number-drum,.console .meter-separator{height:22px;line-height:22px;font-size:20px}
+  body .antique-cabinet .console #spin{grid-row:2;grid-column:1/-1;width:100px;height:100px;min-height:100px;margin:0 0 8px;border-width:9px;font-size:23px;letter-spacing:1px}
+  body .antique-cabinet .console #spin span{font-size:7px;letter-spacing:0;margin-top:4px}
+  .antique-cabinet .console .wager{grid-row:3;grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:10px;padding:0}
+  .antique-cabinet .console .wager>div{gap:12px}
+  .antique-cabinet .console .wager label{max-width:46px;line-height:13px}
+  .antique-cabinet .console .wager small{display:none}
+  .antique-cabinet .wager .counter-window{min-height:34px;padding:3px;border-width:3px}
+  body .antique-cabinet .console .wager button{width:44px;height:44px;flex-basis:44px}
+  .antique-cabinet .machine-bottom{margin:0;padding:0;gap:2px;flex-wrap:nowrap;border-bottom-width:2px}
+  .antique-cabinet .machine-bottom button,.antique-cabinet .machine-bottom .skip{min-height:44px;min-width:0;flex:1;display:flex;align-items:center;justify-content:center;padding:2px;font-size:9px;letter-spacing:0}
+  .machine-bottom .speed span{font-size:7px}.machine-bottom .skip{gap:2px}.machine-bottom .skip input{margin:0;width:15px;height:15px;flex-shrink:0}
+  main>footer{margin:0;padding:0;border:0;font-size:6px;letter-spacing:0;line-height:8px;gap:3px}
+  footer #devToggle{padding:0 3px;font-size:7px;min-height:16px}
+  main>#dev:not([hidden]){position:fixed;inset:48px 8px auto;z-index:30;max-height:70dvh;overflow:auto}
+  .luna-announcement:not([hidden]){position:absolute;z-index:8;left:14px;right:14px;top:30px;padding:6px;box-shadow:0 4px 12px #000a}
+}
+@media(max-width:600px) and (orientation:portrait) and (max-height:560px){
+  main>.saloon{margin-top:20px}
+  .saloon>.antique-cabinet{padding-top:4px;padding-bottom:3px;grid-template-rows:18px minmax(0,1fr) 18px auto 44px;gap:2px}
+  .cabinet-crown{top:-22px;height:27px}
+  .antique-cabinet .machine-top{padding:1px 4px}
+  .antique-cabinet .status{padding:1px 3px;line-height:14px;font-size:9px}
+  .antique-cabinet .console{grid-template-rows:40px 92px 44px;gap:2px 8px;padding:2px 8px 4px;border-width:3px}
+  .antique-cabinet .console label{font-size:8px;line-height:9px}
+  .antique-cabinet .counter-window{min-height:27px;padding:1px 4px}
+  .console .number-drum,.console .meter-separator{height:20px;line-height:20px;font-size:18px}
+  body .antique-cabinet .console #spin{width:84px;height:84px;min-height:84px;border-width:8px;font-size:20px}
+  body .antique-cabinet .console #spin span{font-size:6px}
+}
