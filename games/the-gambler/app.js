@@ -4,15 +4,16 @@ import {cardArtwork} from './card-art.js';
 import {GameSession} from './game-session.js';
 import {WinEffects} from './win-effects.js';
 import {lunaScatterArtwork,LunaScatterCelebration} from './luna-scatter.js';
+import {MachineAudio} from './machine-audio.js';
 const $=id=>document.getElementById(id),names={gambler:'The Gambler',lou:'Lucky Lou',heidi:'Heidi Ho',wild:'Wild',scatter:'Luna Moon · SCATTER'};
 const saveKey='gambler-'+CONFIG.version;
 let game;
 try{const saved=sessionStorage.getItem(saveKey);game=saved?GameSession.restore(JSON.parse(saved)):new GameSession();}catch{game=new GameSession();}
 function persist(){sessionStorage.setItem(saveKey,JSON.stringify(game.exportState()));}
-let busy=false,forced=null,sound=false,audio,animationController;
+let busy=false,forced=null,sound=false,animationController;
+const machineAudio=new MachineAudio();
 let spinSpeed=sessionStorage.getItem('gambler-spin-speed')==='2'?2:1;
 const fmt=n=>n.toLocaleString('en-US',{maximumFractionDigits:1});
-function tone(freq=440,duration=.12){if(!sound)return;try{audio??=new AudioContext();audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.connect(g);g.connect(audio.destination);o.frequency.value=freq;g.gain.setValueAtTime(.06,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.start();o.stop(audio.currentTime+duration);}catch{}}
 function symbolHTML(s){if(['gambler','lou','heidi'].includes(s))return `<img alt="" src="assets/${{gambler:'the_gambler_1',lou:'lucky_lou_1',heidi:'heidi_ho_1'}[s]}.png"><span class="name">${names[s]}</span>`;if(s==='wild')return '<b>♠♣</b><span>WILD</span>';if(s==='scatter')return lunaScatterArtwork();return cardArtwork(s);}
 function drawCell(cell,s){cell.className='symbol '+(s==='wild'?'wild':s==='scatter'?'scatter':['gambler','lou','heidi'].includes(s)?'character':'card');cell.dataset.symbol=s;cell.innerHTML=symbolHTML(s);cell.setAttribute('aria-label',names[s]||s);}
 for(let c=0;c<5;c++){const reel=document.createElement('div');reel.className='reel';for(let r=0;r<3;r++){const cell=document.createElement('div');drawCell(cell,['A','gambler','K','lou','Q','heidi','J','wild','10','9'][(c*3+r)%10]);reel.append(cell);}$('reels').append(reel);}
@@ -38,6 +39,7 @@ function animate(grid){
     function finish(){
       if(finished)return;
       finished=true;
+      machineAudio.stopReels();
       cancelAnimationFrame(frameId);
       reducedMotion.removeEventListener('change',motionChanged);
       reels.forEach((_,column)=>land(column));
@@ -49,6 +51,7 @@ function animate(grid){
     animationController=finish;
     ui();
     if($('skip').checked||reducedMotion.matches){finish();return;}
+    machineAudio.startReels(spinSpeed);
     reducedMotion.addEventListener('change',motionChanged);
     reels.forEach((reel,column)=>{
       const initial=[...reel.children].map(cell=>cell.dataset.symbol);
@@ -83,7 +86,7 @@ function animate(grid){
         const motion=reelFrame((now-start)*speed,column,track.steps);
         if(motion.state==='stopped'){
           land(column);
-          tone(250+column*80);
+          machineAudio.click(column);
           continue;
         }
         track.strip.style.setProperty('--cell-height',`${height}px`);
@@ -101,11 +104,11 @@ function animate(grid){
 function bonusChoice(stake){
   return new Promise(resolve=>{
     $('bonusTitle').textContent='LUNA MOON — BONUS UNLOCKED!';
-    $('bonusContent').innerHTML=`<p>Three scatters. Two ways to make history. Maximum ${fmt(CONFIG.maxEventMultiple)}× total wager across the triggering spin and the whole feature.</p><div class="bonus-choices"><button id="chooseShowdown">Dead Man’s Hand<small>One pick. Up to 100× your wager.</small></button><button id="chooseFree">Heidi Ho<small>${CONFIG.heidiGuaranteedMultiple}× welcome award + ${CONFIG.freeSpins} free spins · ${CONFIG.freeSpinMultiplier}× line wins</small></button></div>${game.state.round.developerCap?'<p>DEVELOPER CAP TEST: choose Heidi. All ten free spins will land wild.</p>':''}`;
+    $('bonusContent').innerHTML=`<p>Three scatters. Two ways to make history. Maximum ${fmt(CONFIG.maxEventMultiple)}× total wager across the triggering spin and the whole feature.</p><div class="bonus-choices"><button id="chooseShowdown" class="bonus-art-choice"><img src="assets/the_gambler_1.png" alt=""><span class="bonus-choice-copy">Dead Man’s Hand<small>Face The Gambler. One pick. Up to 100× your wager.</small></span></button><button id="chooseFree" class="bonus-art-choice"><img src="assets/heidi_ho_1.png" alt=""><span class="bonus-choice-copy">Heidi Ho<small>${CONFIG.heidiGuaranteedMultiple}× welcome award + ${CONFIG.freeSpins} free spins · ${CONFIG.freeSpinMultiplier}× line wins</small></span></button></div>${game.state.round.developerCap?'<p>DEVELOPER CAP TEST: choose Heidi. All ten free spins will land wild.</p>':''}`;
     $('bonus').showModal();$('bonus').oncancel=e=>e.preventDefault();
     $('chooseFree').onclick=async()=>{
       if(game.state.phase!=='choice')return;
-      const grant=game.chooseHeidi();ui();count($('win'),grant.credited);$('bonus').close();
+      const grant=game.chooseHeidi();if(grant.credited>0)machineAudio.cash();ui();count($('win'),grant.credited);$('bonus').close();
       $('status').textContent=`Heidi’s welcome award: ${fmt(grant.credited)} credits. ${CONFIG.freeSpins} free spins with ${CONFIG.freeSpinMultiplier}× line wins.`;
       await effects.play({id:`activation-${game.state.round.id}`,kind:'activation',amount:CONFIG.freeSpins,detail:`Heidi Ho · ${fmt(grant.credited)} credits welcome award`});
       resolve();
@@ -114,7 +117,7 @@ function bonusChoice(stake){
       if(!['choice','pick'].includes(game.state.phase))return;
       if(game.state.phase==='choice')game.prepareShowdown();ui();
       $('bonusTitle').textContent='Dead Man’s Hand';
-      $('bonusContent').innerHTML='<p>Aces and eights are on the table. Pick a concealed card to reveal your award.</p><div class="cards">'+Array.from({length:5},(_,i)=>`<button aria-label="Pick card ${i+1}">♠</button>`).join('')+'</div><p id="pickResult">Your hand is waiting.</p>';
+      $('bonusContent').innerHTML='<p>The Gambler is waiting across the table. Pick a concealed card to reveal your award.</p><div class="cards">'+Array.from({length:5},(_,i)=>`<button aria-label="Pick card ${i+1}">♠</button>`).join('')+'</div><p id="pickResult">Your hand is waiting.</p>';
       document.querySelectorAll('.cards button').forEach((button,index)=>button.onclick=()=>{
         if(game.state.phase!=='pick')return;
         const result=game.revealShowdown();
@@ -123,7 +126,7 @@ function bonusChoice(stake){
         $('pickResult').textContent=`Dead Man’s Hand pays ${fmt(result.credited)} play credits. Event total: ${fmt(result.eventTotal)}.`;
         const done=document.createElement('button');done.textContent='Collect & return';$('bonusContent').append(done);
         done.onclick=async()=>{done.disabled=true;$('bonus').close();await effects.play({id:`showdown-${game.state.round.id}`,kind:'showdown',amount:result.credited,detail:'Aces and eights · The table is yours'});$('status').textContent=`Showdown won ${fmt(result.credited)} credits. The table is yours.`;resolve();};
-        tone(550,.4);
+        if(result.credited>0)machineAudio.cash();
       });
     };
     if(game.state.phase==='pick')$('chooseShowdown').click();
@@ -137,9 +140,9 @@ async function play(){
     const ticket=game.pendingSpin||game.beginSpin({forced:isFree?null:forced});
     luna.clear();effects.clear();
     forced=null;$('forced').textContent='';ui();
-    $('status').textContent=ticket.isFree?'Heidi’s luck is riding with you…':'The cards are in motion…';tone(180);
+    $('status').textContent=ticket.isFree?'Heidi’s luck is riding with you…':'The cards are in motion…';
     await animate(ticket.grid);
-    const award=game.finishSpin(ticket.id);
+    const award=game.finishSpin(ticket.id);if(award.credited>0)machineAudio.cash();
     ticket.wins.forEach(win=>{for(let c=0;c<win.count;c++)reels[c].children[win.rows[c]].classList.add('winning');});
     ui();count($('win'),award.credited);
     $('status').textContent=award.credited?`${ticket.wins.length} winning line${ticket.wins.length===1?'':'s'} · ${fmt(award.credited)} credits${ticket.isFree?` · ${CONFIG.freeSpinMultiplier}× free-spin payout`:''}`:'No winning hand this time. Fortune awaits.';
@@ -149,14 +152,14 @@ async function play(){
     if(award.featureComplete)await effects.play({id:`complete-${ticket.eventId}`,kind:'complete',amount:award.featureTotal,detail:'Heidi Ho · All free spins completed'});
     if(award.featureComplete)$('status').textContent=`Heidi’s feature complete · ${fmt(award.featureTotal)} feature credits · ${fmt(award.eventTotal)} total event credits${award.capReached?' · maximum reached':''}.`;
   }catch(error){$('status').textContent=error.message;console.error(error);}
-  finally{busy=false;ui();}
+  finally{machineAudio.stopReels();busy=false;ui();}
 }
 $('speed').onclick=()=>{if(busy)return;spinSpeed=spinSpeed===1?2:1;sessionStorage.setItem('gambler-spin-speed',String(spinSpeed));ui();};
 $('spin').onclick=()=>{if(animationController)animationController();else play();};
 $('less').onclick=()=>{if(!busy&&game.state.phase==='idle'){game.setWager(CONFIG.wagers[Math.max(0,CONFIG.wagers.indexOf(game.state.wager)-1)]);ui();}};
 $('more').onclick=()=>{if(!busy&&game.state.phase==='idle'){game.setWager(CONFIG.wagers[Math.min(CONFIG.wagers.length-1,CONFIG.wagers.indexOf(game.state.wager)+1)]);ui();}};
 $('skip').onchange=()=>{if($('skip').checked){animationController?.();effects.finish();luna.finish();}};
-$('sound').onclick=()=>{sound=!sound;if(!sound)effects.mute();$('sound').textContent=sound?'Sound on':'Sound off';$('sound').setAttribute('aria-pressed',String(sound));tone();};
+$('sound').onclick=()=>{sound=!sound;machineAudio.setEnabled(sound);if(!sound)effects.mute();else if(animationController)machineAudio.startReels(spinSpeed);$('sound').textContent=sound?'Sound on':'Sound off';$('sound').setAttribute('aria-pressed',String(sound));$('sound').setAttribute('aria-label',sound?'Mute sound':'Turn sound on');$('sound').title=sound?'Mute sound':'Turn sound on';if(sound)machineAudio.click();};
 $('refill').onclick=()=>{if(!busy&&game.state.phase==='idle'){game.refill();ui();$('status').textContent='Your balance is refilled to 1,000 play credits.';}};
 $('devToggle').onclick=()=>{$('dev').hidden=!$('dev').hidden;};
 const fixtureNames={bonus:'three scatters',big:'big win',cap:'Heidi cap test — choose Heidi, then ten all-wild free spins'};
@@ -170,3 +173,10 @@ $('freeFeatureCaption').textContent=`${CONFIG.freeSpins} free spins. ${CONFIG.fr
 $('paytable').onclick=()=>$('rules').showModal();document.querySelectorAll('[data-close]').forEach(button=>button.onclick=()=>$(button.dataset.close).close());ui();
 if(game.state.phase==='spinning')play();
 else if(['choice','pick'].includes(game.state.phase)){busy=true;ui();bonusChoice(game.state.round.wager).finally(()=>{busy=false;ui();});}
+
+
+window.addEventListener('pagehide',()=>{machineAudio.stopAll();effects.mute();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){machineAudio.stopAll();effects.mute();}});
+
+
+
