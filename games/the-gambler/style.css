@@ -117,7 +117,7 @@ body #bonus .bonus-art-choice{position:relative;isolation:isolate;overflow:hidde
 body #bonus .bonus-art-choice:hover{filter:brightness(1.1);border-color:#ffe9b8}
 @media(max-width:600px){#bonus{padding:18px;max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 20px)}#bonus>.eyebrow{font-size:8px}#bonus>h2{font-size:23px;line-height:1.12;margin:8px 0}#bonusContent>p{font-size:11px;margin-bottom:10px}.bonus-choices{gap:10px}body #bonus .bonus-art-choice{min-height:150px}.bonus-choice-copy{min-height:150px;padding:13px 12px 13px 43%;font-size:21px}.bonus-art-choice>img{object-position:40% 25%}.bonus-art-choice:before{background:linear-gradient(90deg,transparent,#19080d77 28%,#19080ee6 48%,#10070af2)}.bonus-choices .bonus-choice-copy small{font-size:10px;margin-top:7px}}
 @media(max-width:600px){.bonus-art-choice>img{width:66%;object-position:50% 20%}.bonus-art-choice:before{background:linear-gradient(90deg,transparent 20%,#19080d55 38%,#19080ee6 62%,#10070af2)}}
-.portrait .lou{background-image:url("assets/lucky_lou_1.png");background-size:auto 112%;background-position:52% 0}
+.portrait .lou{background-image:url("assets/lucky_lou_slim_v2.png");background-size:auto 112%;background-position:52% 0}
 /* The Gambler appears as the elusive opponent during major victories. */
 .victory-big .victory-art,.victory-mega .victory-art{background-image:url('assets/the_gambler_1.png');opacity:.2;mask-image:linear-gradient(90deg,#000,transparent 75%)}
 /* Ace-blue header controls and warm title-gold character lettering. */
@@ -135,3 +135,5 @@ body header #sound{display:grid;place-items:center;padding:7px}
 body header #sound:before{width:28px;height:28px;mask:none;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f3dfaf' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9h4l5-4v14l-5-4H3z'/%3E%3Cpath d='M16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14'/%3E%3C/svg%3E") center/contain no-repeat}
 body header #sound[aria-pressed="false"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f3dfaf' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9h4l5-4v14l-5-4H3z'/%3E%3Cpath d='m16 9 6 6m0-6-6 6'/%3E%3C/svg%3E")}
 body header #sound[aria-pressed="false"]:after{display:none}
+.rank-art.premium-card{filter:drop-shadow(0 2px 2px #0008)}
+
