@@ -14,7 +14,7 @@ let busy=false,forced=null,sound=false,animationController;
 const machineAudio=new MachineAudio();
 let spinSpeed=sessionStorage.getItem('gambler-spin-speed')==='2'?2:1;
 const fmt=n=>n.toLocaleString('en-US',{maximumFractionDigits:1});
-function symbolHTML(s){if(['gambler','lou','heidi'].includes(s))return `<img alt="" src="assets/${{gambler:'the_gambler_1',lou:'lucky_lou_1',heidi:'heidi_ho_1'}[s]}.png"><span class="name">${names[s]}</span>`;if(s==='wild')return '<b>♠♣</b><span>WILD</span>';if(s==='scatter')return lunaScatterArtwork();return cardArtwork(s);}
+function symbolHTML(s){if(['gambler','lou','heidi'].includes(s))return `<img alt="" src="assets/${{gambler:'the_gambler_1',lou:'lucky_lou_slim_v2',heidi:'heidi_ho_1'}[s]}.png"><span class="name">${names[s]}</span>`;if(s==='wild')return '<b>♠♣</b><span>WILD</span>';if(s==='scatter')return lunaScatterArtwork();return cardArtwork(s);}
 function drawCell(cell,s){cell.className='symbol '+(s==='wild'?'wild':s==='scatter'?'scatter':['gambler','lou','heidi'].includes(s)?'character':'card');cell.dataset.symbol=s;cell.innerHTML=symbolHTML(s);cell.setAttribute('aria-label',names[s]||s);}
 for(let c=0;c<5;c++){const reel=document.createElement('div');reel.className='reel';for(let r=0;r<3;r++){const cell=document.createElement('div');drawCell(cell,['A','gambler','K','lou','Q','heidi','J','wild','10','9'][(c*3+r)%10]);reel.append(cell);}$('reels').append(reel);}
 const reels=[...$('reels').children];
@@ -177,6 +177,3 @@ else if(['choice','pick'].includes(game.state.phase)){busy=true;ui();bonusChoice
 
 window.addEventListener('pagehide',()=>{machineAudio.stopAll();effects.mute();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){machineAudio.stopAll();effects.mute();}});
-
-
-
