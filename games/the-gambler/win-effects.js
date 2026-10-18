@@ -1,12 +1,14 @@
 // Presentation only: callers supply confirmed, already-settled awards.
 export function winTier(amount,wager,big=10){return amount>=wager*100?'mega':amount>=wager*big?'big':amount>=wager*5?'medium':'small';}
 export class WinEffects {
-  constructor({reels,skip,sound,format}){
-    Object.assign(this,{reels,skip,sound,format});this.seen=new Set();this.active=null;
+  constructor({reels,skip,sound,format,victoryMusic}){
+    Object.assign(this,{reels,skip,sound,format,victoryMusic});this.seen=new Set();this.active=null;
     this.motion=matchMedia('(prefers-reduced-motion: reduce)');
     this.dialog=document.createElement('dialog');this.dialog.id='winShow';this.dialog.setAttribute('aria-labelledby','victoryTitle');
-    this.dialog.innerHTML='<div class="victory-glow"></div><div class="saloon-door door-left"></div><div class="saloon-door door-right"></div><div class="victory-art"></div><div class="victory-particles" aria-hidden="true"></div><div class="victory-copy"><span class="eyebrow">DEAD MAN’S HAND · HIGH STAKES</span><h2 id="victoryTitle"></h2><p class="victory-detail"></p><strong class="victory-amount"></strong><span class="victory-unit">PLAY CREDITS</span><button class="victory-skip">Skip animation</button><button class="victory-mute">Sound off</button></div>';
+    this.dialog.innerHTML='<div class="victory-glow"></div><div class="saloon-door door-left"></div><div class="saloon-door door-right"></div><div class="victory-art"></div><div class="victory-particles" aria-hidden="true"></div><div class="victory-copy"><span class="eyebrow">DEAD MAN’S HAND · HIGH STAKES</span><h2 id="victoryTitle"></h2><p class="victory-detail"></p><strong class="victory-amount"></strong><span class="victory-unit">PLAY CREDITS</span><button class="victory-skip victory-close" aria-label="Finish celebration">×</button><button class="victory-mute">Sound off</button></div>';
     document.body.append(this.dialog);this.dialog.querySelector('button').onclick=()=>this.finish();this.dialog.querySelector('.victory-mute').onclick=()=>{document.querySelector('#sound').click();this.dialog.querySelector('.victory-mute').textContent=this.sound()?'Mute sound':'Sound off';};this.dialog.oncancel=e=>{e.preventDefault();this.finish();};
+    this.dialog.addEventListener('click',e=>{if(!e.target.closest('.victory-mute'))this.finish();});
+    this.dialog.addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)&&!e.target.closest('button')){e.preventDefault();this.finish();}});
     this.motion.addEventListener('change',e=>{if(e.matches)this.finish();});
   }
   clear(){this.reels.querySelectorAll('.winning').forEach(x=>x.classList.remove('winning'));this.reels.parentElement.querySelector('.winning-lines')?.remove();}
@@ -31,10 +33,11 @@ export class WinEffects {
     const titles={small:'Winning hand',medium:'WIN',big:'BIG WIN',mega:'MEGA WIN',showdown:'SHOWDOWN VICTORY',activation:'FREE SPINS AWARDED',complete:'BONUS COMPLETE'};
     d.querySelector('h2').textContent=titles[kind];d.querySelector('.victory-detail').textContent=detail;
     const counter=d.querySelector('strong');counter.textContent=this.format(reduced?amount:0);
+    counter.classList.toggle('victory-amount-long',this.format(amount).length>8);
     d.querySelector('.victory-unit').textContent=kind==='activation'?'FREE SPINS':'PLAY CREDITS';
     const particles=d.querySelector('.victory-particles');particles.replaceChildren();
     if(kind==='small'||kind==='medium'){this.reels.parentElement.append(particles);particles.classList.add('reel-victory-particles');}
-    if(!reduced){const n=innerWidth<600?18:36;for(let i=0;i<n;i++){const p=document.createElement('i');p.className=kind==='small'||kind==='big'?'gold-spark':'gold-coin';p.style.cssText=`--x:${(i*37)%100}%;--dx:${Math.cos(i*2.4)*320}px;--dy:${Math.sin(i*2.4)*240}px;--delay:${i%6*.09}s;`;if(kind==='medium'){p.classList.add('reel-coin-burst');const win=wins[i%Math.max(1,wins.length)];p.style.left=`${10+(i%(win?.count||5))*20}%`;p.style.top=`${25+(win?.rows[i%(win?.count||5)]||0)*18}%`;}particles.append(p);}}
+    if(!reduced){const n=innerWidth<600?18:36;for(let i=0;i<n;i++){const p=document.createElement('i');p.className=['big','mega','showdown','complete'].includes(kind)?'poker-chip':kind==='small'?'gold-spark':'gold-coin';p.style.cssText=`--chip:${['#a31c35','#1c4e9d','#197153','#e8d8b7','#242029'][i%5]};--ink:${i%5===3?'#4a3020':'#f8e5b9'};--x:${(i*37)%100}%;--dx:${Math.cos(i*2.4)*(innerWidth<600?170:320)}px;--dy:${Math.sin(i*2.4)*240}px;--delay:${i%9*.12}s;`;if(kind==='medium'){p.classList.add('reel-coin-burst');const win=wins[i%Math.max(1,wins.length)];p.style.left=`${10+(i%(win?.count||5))*20}%`;p.style.top=`${25+(win?.rows[i%(win?.count||5)]||0)*18}%`;}particles.append(p);}}
     const duration=reduced?850:({small:1500,medium:2400,big:3300,mega:4600,showdown:3800,activation:2600,complete:3400}[kind]);
     return new Promise(resolve=>{
       let frame,timer,closed=false;const started=performance.now();
@@ -48,6 +51,7 @@ export class WinEffects {
   }
   music(kind){
     if(!this.sound()||kind==='small')return;
+    if(this.victoryMusic){this.stopAudio=this.victoryMusic(kind);return;}
     try{this.audio??=new AudioContext();this.audio.resume();const ctx=this.audio,nodes=[];const notes=kind==='medium'?[293.66,369.99,440,587.33]:[146.83,220,293.66,369.99,440,587.33,440,587.33];
       notes.forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain(),at=ctx.currentTime+i*.19;o.type=i%3===0?'triangle':'sine';o.frequency.value=f;o.connect(g);g.connect(ctx.destination);g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.035,at+.015);g.gain.exponentialRampToValueAtTime(.0001,at+.65);o.start(at);o.stop(at+.7);nodes.push(o);});
       this.stopAudio=()=>{nodes.forEach(o=>{try{o.stop();}catch{}});this.stopAudio=null;};

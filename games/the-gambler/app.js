@@ -1,11 +1,11 @@
 import {CONFIG,PAYTABLE,PAYLINES,SYMBOLS} from './engine.js';
 import {buildReelStrip,reelFrame} from './reel-motion.js';
-import {cardArtwork} from './card-art.js';
+import {cardArtwork,SYMBOL_ART_NAMES} from './card-art.js';
 import {GameSession} from './game-session.js';
 import {WinEffects} from './win-effects.js';
 import {lunaScatterArtwork,LunaScatterCelebration} from './luna-scatter.js';
 import {MachineAudio} from './machine-audio.js';
-const $=id=>document.getElementById(id),names={gambler:'The Gambler',lou:'Lucky Lou',heidi:'Heidi Ho',wild:'Wild',scatter:'Luna Moon · SCATTER'};
+const $=id=>document.getElementById(id),names={...SYMBOL_ART_NAMES,gambler:'The Gambler',lou:'Lucky Lou',heidi:'Heidi Ho',wild:'Wild',scatter:'Luna Moon · SCATTER'};
 const saveKey='gambler-'+CONFIG.version;
 let game;
 try{const saved=sessionStorage.getItem(saveKey);game=saved?GameSession.restore(JSON.parse(saved)):new GameSession();}catch{game=new GameSession();}
@@ -19,7 +19,8 @@ function drawCell(cell,s){cell.className='symbol '+(s==='wild'?'wild':s==='scatt
 for(let c=0;c<5;c++){const reel=document.createElement('div');reel.className='reel';for(let r=0;r<3;r++){const cell=document.createElement('div');drawCell(cell,['A','gambler','K','lou','Q','heidi','J','wild','10','9'][(c*3+r)%10]);reel.append(cell);}$('reels').append(reel);}
 const reels=[...$('reels').children];
 const luna=new LunaScatterCelebration({reels:$('reels'),skip:$('skip')});
-const effects=new WinEffects({reels:$('reels'),skip:$('skip'),sound:()=>sound,format:fmt});
+const effects=new WinEffects({reels:$('reels'),skip:$('skip'),sound:()=>sound,format:fmt,victoryMusic:()=>{machineAudio.liftMusic();return ()=>machineAudio.settleMusic();}});
+$('reels').addEventListener('click',()=>{if(animationController)animationController();else{effects.finish();luna.finish();}});
 function ui(){persist();const s=game.state,locked=busy||s.phase!=='idle',canStop=Boolean(animationController);$('balance').textContent=fmt(s.balance);$('wager').textContent=fmt(s.wager);$('lineBet').textContent=fmt(s.wager/10);$('less').disabled=locked||s.wager===CONFIG.wagers[0];$('more').disabled=locked||s.wager===CONFIG.wagers.at(-1);$('spin').disabled=!canStop&&(busy||!['idle','free'].includes(s.phase)||(s.phase==='idle'&&s.balance<s.wager));$('spin').innerHTML=canStop?'STOP<span>REVEAL YOUR HAND</span>':s.freeSpins?`SPIN<span>${s.freeSpins} FREE SPINS LEFT</span>`:'SPIN<span>TRY YOUR LUCK ↻</span>';$('speed').disabled=busy;$('speed').innerHTML=spinSpeed===2?'⚡⚡<span> FAST</span>':'⚡<span> NORMAL</span>';$('speed').setAttribute('aria-pressed',String(spinSpeed===2));$('speed').setAttribute('aria-label',`Spin speed: ${spinSpeed===2?'fast. Switch to normal':'normal. Switch to fast'}`);$('speed').title=spinSpeed===2?'Fast spin speed (2×)':'Normal spin speed';$('refill').disabled=locked;document.querySelectorAll('[data-force]').forEach(b=>b.disabled=locked);$('reset').disabled=locked;if($('devState'))$('devState').textContent=`${CONFIG.version} · ${s.phase} · event ${s.round?.id||'—'}: ${fmt(s.round?.credited||0)} / ${fmt(s.round?.cap||s.wager*CONFIG.maxEventMultiple)} credits · ${s.freeSpins} free spins remaining${s.round?.developerCap?' · DEVELOPER CAP FIXTURE':''}`;}
 const counters=new WeakMap();
 function count(el,value){const token={};counters.set(el,token);el.textContent=fmt(value);if($('skip').checked||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const start=performance.now();function frame(now){if(counters.get(el)!==token)return;const p=$('skip').checked?1:Math.min(1,(now-start)/850);el.textContent=fmt(Math.floor(value*(1-(1-p)**3)*10)/10);if(p<1)requestAnimationFrame(frame);}requestAnimationFrame(frame);}
@@ -176,4 +177,4 @@ else if(['choice','pick'].includes(game.state.phase)){busy=true;ui();bonusChoice
 
 
 window.addEventListener('pagehide',()=>{machineAudio.stopAll();effects.mute();});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){machineAudio.stopAll();effects.mute();}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){machineAudio.stopAll();effects.mute();}else if(sound){machineAudio.resumeMusic();}});

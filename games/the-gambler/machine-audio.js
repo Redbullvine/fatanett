@@ -10,9 +10,38 @@ export class MachineAudio {
       this.context??=new Context();
       if(!this.master){this.master=this.context.createGain();this.master.gain.value=.55;this.master.connect(this.context.destination);}
       this.context.resume().catch(()=>{});
+      this.resumeMusic();
     }catch{this.context=null;}
   }
   get ready(){return this.enabled&&this.context&&this.master;}
+  resumeMusic(){
+    if(!this.ready||typeof Audio==='undefined'||document.hidden)return;
+    try{
+      if(!this.musicElement){
+        this.musicElement=new Audio('assets/old_west_pixabay.mp3');
+        this.musicElement.loop=true;this.musicElement.preload='none';
+        this.musicSource=this.context.createMediaElementSource(this.musicElement);
+        this.musicGain=this.context.createGain();this.musicGain.gain.value=0;
+        this.musicSource.connect(this.musicGain);this.musicGain.connect(this.master);
+      }
+      this.settleMusic();this.musicElement.play().catch(()=>{});
+    }catch{}
+  }
+  settleMusic(){
+    if(!this.musicGain)return;
+    const at=this.context.currentTime,g=this.musicGain.gain;
+    g.cancelScheduledValues(at);g.setValueAtTime(g.value,at);g.linearRampToValueAtTime(.07,at+.4);
+  }
+  liftMusic(){
+    if(!this.ready||!this.musicGain||this.musicElement.paused)return;
+    const at=this.context.currentTime,g=this.musicGain.gain;
+    g.cancelScheduledValues(at);g.setValueAtTime(g.value,at);
+    g.linearRampToValueAtTime(.14,at+.35);g.setValueAtTime(.14,at+1.8);g.linearRampToValueAtTime(.07,at+2.6);
+  }
+  pauseMusic(){
+    this.musicElement?.pause();
+    if(this.musicGain){const at=this.context.currentTime;this.musicGain.gain.cancelScheduledValues(at);this.musicGain.gain.setValueAtTime(0,at);}
+  }
   noise(){
     if(this.buffer)return this.buffer;
     const c=this.context,b=c.createBuffer(1,c.sampleRate,c.sampleRate),data=b.getChannelData(0);let seed=1976;
@@ -37,22 +66,44 @@ export class MachineAudio {
   }
   startReels(speed=1){
     this.stopReels();if(!this.ready)return;
-    try{const c=this.context,at=c.currentTime,n=this.track(c.createBufferSource()),filter=c.createBiquadFilter(),bed=c.createGain(),hum=this.track(c.createOscillator()),humGain=c.createGain(),flutter=this.track(c.createOscillator()),depth=c.createGain();
-      n.buffer=this.noise();n.loop=true;n.playbackRate.value=speed===2?1.15:1;filter.type='lowpass';filter.frequency.value=900;bed.gain.setValueAtTime(0,at);bed.gain.linearRampToValueAtTime(.066,at+.16);
-      n.connect(filter);filter.connect(bed);bed.connect(this.master);hum.type='triangle';hum.frequency.setValueAtTime(48,at);hum.frequency.exponentialRampToValueAtTime(speed===2?110:85,at+.25);humGain.gain.value=.021;hum.connect(humGain);humGain.connect(this.master);
-      flutter.frequency.value=speed===2?31:23;depth.gain.value=.015;flutter.connect(depth);depth.connect(bed.gain);
-      this.motor=[n,hum,flutter];this.motorGains=[bed,humGain,filter,depth];for(const source of this.motor)source.start(at);this.click();
+    try{const c=this.context,at=c.currentTime,n=this.track(c.createBufferSource()),filter=c.createBiquadFilter(),g=c.createGain();
+      // Six light steel detents per cylinder revolution, with quiet bearing friction.
+      if(!this.cylinderBuffer){const period=.045,length=Math.floor(c.sampleRate*period*6),b=c.createBuffer(1,length,c.sampleRate),d=b.getChannelData(0);let seed=1873;
+        const accents=[1,.6,.82,.62,.9,.58];
+        for(let i=0;i<length;i++){seed=(1664525*seed+1013904223)>>>0;const time=i/c.sampleRate,t=time%period,tooth=Math.min(5,Math.floor(time/period)),noise=seed/2147483648-1;
+          d[i]=accents[tooth]*(noise*.32*Math.exp(-t*650)+Math.sin(2*Math.PI*1850*t)*.3*Math.exp(-t*260)+Math.sin(2*Math.PI*3270*t)*.12*Math.exp(-t*340))+noise*.012;
+        }
+        this.cylinderBuffer=b;}
+      n.buffer=this.cylinderBuffer;n.loop=true;
+      n.playbackRate.setValueAtTime(1.1,at);n.playbackRate.linearRampToValueAtTime(1.65,at+.14/speed);n.playbackRate.exponentialRampToValueAtTime(.38,at+3.1/speed);
+      filter.type='lowpass';filter.frequency.value=4800;g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.14,at+.025);
+      n.connect(filter);filter.connect(g);g.connect(this.master);this.motor=[n];this.motorGains=[filter,g];n.start(at);
     }catch{this.stopReels();}
   }
   stopReels(){
     const nodes=this.motor.splice(0),extras=this.motorGains?.splice(0)||[];
     for(const node of nodes){try{node.stop();node.disconnect();}catch{}this.voices.delete(node);}
     for(const node of extras)try{node.disconnect();}catch{}
+    if(nodes.length&&this.ready){try{const at=this.context.currentTime;this.mechanism(at,.045,2450,.09);this.bell(1180,at,.06,.025);}catch{}}
   }
   cash(){
     if(!this.ready)return;
-    try{const at=this.context.currentTime;this.bell(1318.51,at,.22,.105);this.bell(2093,at+.115,.85,.13);this.bell(2637.02,at+.14,.7,.06);}catch{}
+    this.liftMusic();
+    try{const c=this.context,at=c.currentTime;
+      // Register lever, spring-loaded drawer, and the brass sale bell.
+      this.mechanism(at,.075,620,.24);
+      this.mechanism(at+.09,.26,1100,.105);
+      this.mechanism(at+.38,.065,350,.14);
+      this.bell(1760,at+.11,1.05,.16);
+      this.bell(2464,at+.115,.55,.035);
+    }catch{}
   }
-  stopAll(){this.stopReels();for(const source of this.voices){try{source.stop();}catch{}}this.voices.clear();}
+  mechanism(at,duration,frequency,level){
+    const c=this.context,s=this.track(c.createBufferSource()),f=c.createBiquadFilter(),g=c.createGain();
+    s.buffer=this.noise();f.type='bandpass';f.frequency.value=frequency;f.Q.value=.65;
+    g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(level,at+.004);g.gain.exponentialRampToValueAtTime(.0001,at+duration);
+    s.connect(f);f.connect(g);g.connect(this.master);s.onended=()=>{this.voices.delete(s);s.disconnect();f.disconnect();g.disconnect();};s.start(at);s.stop(at+duration+.01);
+  }
+  stopAll(){this.pauseMusic();this.stopReels();for(const source of this.voices){try{source.stop();}catch{}}this.voices.clear();}
 }
 
