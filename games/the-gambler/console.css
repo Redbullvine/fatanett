@@ -111,3 +111,7 @@ body .antique-cabinet .console button:disabled{opacity:.65;filter:saturate(.5)}
 }
 @media(max-width:600px) and (orientation:portrait) and (max-height:560px){.antique-cabinet .console{grid-template-rows:36px 78px}}
 @media(max-width:600px) and (orientation:portrait){.antique-cabinet .console .meter label{white-space:nowrap;font-size:8px;letter-spacing:0}}
+/* Keep both SPIN and STOP comfortably inside the mobile enamel face. */
+@media(max-width:760px){body .antique-cabinet .console #spin{font-size:20px;letter-spacing:0;padding:0 3px;line-height:1.1}}
+@media(max-width:600px) and (orientation:portrait){body .antique-cabinet .console #spin{font-size:17px}body .antique-cabinet .console #spin span{letter-spacing:0}}
+@media(max-width:600px) and (orientation:portrait) and (max-height:560px){body .antique-cabinet .console #spin{font-size:16px}}

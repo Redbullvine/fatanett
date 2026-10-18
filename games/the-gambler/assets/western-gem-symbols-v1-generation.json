@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "source": "assets/slot_characters.png",
+  "asset": "assets/western-gem-symbols-v1.png",
+  "prompt": "Edit/repackage the supplied approved slot character artwork into a clean TRANSPARENT 1536x1024 game sprite sheet: EXACTLY 3 columns by 2 rows, each cell 512x512, all subjects entirely contained with at least 24px transparent gutters. NO background, no cream rectangle, no card frames. TOP ROW, left to right: (1) the original TOP-LEFT black-hatted gray-bearded Western K king with sword, same face/clothes/crown and large gold K; (2) original TOP brunette red-hat Q queen, same face/clothes/crown and large gold Q, but replace the prominent ruby DIAMOND ornament at lower-right of her Q badge with a polished faceted RUBY HEART gemstone accent, clearly heart shaped; (3) original TOP one-eyed black-hatted J outlaw, same face/clothes/eyepatch and large gold J. Keep premium detailed 3D realism and polished restrained gold base decorations. BOTTOM ROW, left to right: (1) large BLACK ONYX SPADE; (2) large BLACK ONYX CLUB; (3) large RUBY RED DIAMOND. These three suit symbols must be exceptionally lustrous brilliant-cut FACETED GEMSTONES with crisp geometric facet planes, black-to-charcoal reflective facets for spade/club (clearly BLACK not silver), deep ruby translucent red facets for diamond, a few sharp tasteful specular highlights, thin polished gold settings with delicate scrolling matching the reference. The Queen's heart gem gets same red gemstone treatment. Keep visual fidelity to the source subjects, no redesign of faces, no new characters, no additional symbols/text, no other rows, no alternates. Balanced optical size per tile: portraits roughly 450px tall, gemstones roughly 400px tall, centered in individual 512px cells. Explicit placements: K center256,256; Q center768,256; J center1280,256; spade center256,768; club center768,768; diamond center1280,768. Transparent alpha throughout the canvas except the six independent cutout designs. This will be used directly as game sprites without any surrounding playing card.",
+  "followup": "Background removal only; preserve six subjects, positions, colors and transparent alpha.",
+  "mapping": {
+    "9": "club",
+    "10": "diamond",
+    "K": "king",
+    "Q": "queen with heart accent",
+    "J": "jack",
+    "A": "spade"
+  }
+}

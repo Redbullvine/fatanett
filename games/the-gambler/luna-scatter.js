@@ -12,9 +12,10 @@ export class LunaScatterCelebration {
     this.banner = document.createElement('div');
     this.banner.className = 'luna-announcement';
     this.banner.hidden = true;
-    this.banner.innerHTML = '<strong role="status">LUNA MOON — BONUS UNLOCKED!</strong><button type="button">Skip animation</button>';
+    this.banner.innerHTML = '<strong role="status">LUNA MOON — BONUS UNLOCKED!</strong><button type="button" aria-label="Continue to bonus">×</button>';
     reels.closest('.machine').querySelector('.status').before(this.banner);
     this.banner.querySelector('button').onclick = () => this.finish();
+    this.banner.addEventListener('click',()=>this.finish());
   }
   finish() { this.active?.(); }
   clear() {

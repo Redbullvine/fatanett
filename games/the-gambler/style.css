@@ -137,3 +137,21 @@ body header #sound[aria-pressed="false"]:before{background-image:url("data:image
 body header #sound[aria-pressed="false"]:after{display:none}
 .rank-art.premium-card{filter:drop-shadow(0 2px 2px #0008)}
 
+.rank-art.gem-slot-art{width:96%;height:96%;filter:drop-shadow(0 2px 3px #0009)}
+@media(max-width:760px){.winning-lines polyline{stroke:rgba(255,225,151,.42);stroke-width:2;opacity:1;filter:none}}
+
+/* Direct-tap celebrations and a restrained casino-chip payout shower. */
+#winShow .victory-close{position:absolute;top:-10px;right:-10px;margin:0;padding:0;width:44px;height:44px;min-height:44px;border:0;background:transparent;color:#f6e2b1;font:30px/1 Georgia,serif;z-index:6}
+#winShow .victory-copy{cursor:pointer}
+#winShow .victory-mute{cursor:pointer}
+.victory-big .victory-amount,.victory-mega .victory-amount,.victory-showdown .victory-amount,.victory-complete .victory-amount{font-size:clamp(50px,11vw,112px);line-height:1.05;animation:payout-pop .7s cubic-bezier(.2,.8,.3,1) both}
+.victory-amount.victory-amount-long{font-size:clamp(34px,7vw,64px)}
+.poker-chip{position:absolute;left:50%;top:48%;width:32px;height:32px;border-radius:50%;border:2px solid #efdbab;box-shadow:inset 0 0 0 2px #0005,0 3px 2px #0009;background:radial-gradient(circle,var(--chip) 0 51%,transparent 53%),repeating-conic-gradient(var(--chip) 0deg 22deg,#f5e8cd 22deg 33deg,var(--chip) 33deg 45deg);animation:chip-pour 2.2s var(--delay) cubic-bezier(.25,.65,.5,1) infinite;will-change:transform,opacity}
+.poker-chip:before{content:'';position:absolute;inset:5px;border:1px dashed #f6e2bcaa;border-radius:50%}
+.poker-chip:after{content:'♠';position:absolute;inset:0;display:grid;place-items:center;color:var(--ink);font:16px Georgia,serif;text-shadow:0 1px #0005}
+@keyframes chip-pour{0%{opacity:0;transform:translate(0,0) scale(.4) rotate(0)}12%{opacity:1}35%{opacity:1;transform:translate(var(--dx),-75px) scale(1) rotate(140deg)}100%{opacity:0;transform:translate(var(--dx),490px) scale(.85) rotate(650deg)}}
+@keyframes payout-pop{0%{opacity:0;transform:scale(.7)}65%{opacity:1;transform:scale(1.07)}100%{opacity:1;transform:scale(1)}}
+.luna-announcement{position:relative;cursor:pointer;padding-right:44px}
+.luna-announcement button{position:absolute;right:0;top:0;min-width:44px;min-height:44px;margin:0;font-size:24px;background:transparent;border:0}
+@media(max-width:600px){.poker-chip{width:25px;height:25px}.poker-chip:after{font-size:12px}.victory-big h2,.victory-mega h2{font-size:clamp(32px,10vw,48px)}}
+@media(prefers-reduced-motion:reduce){.poker-chip{display:none}.victory-amount{animation:none!important}}
